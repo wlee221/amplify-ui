@@ -1,6 +1,8 @@
 import { Amplify } from "aws-amplify";
-import { AmplifyProvider, components, theme } from "@aws-amplify/ui-react";
+import { AmplifyProvider, components, theme  } from "@aws-amplify/ui-react";
+import {  AmplifyAuthenticator, AmplifySignOut } from "@aws-amplify/ui-react2";
 import { customComponents } from "./customComponents";
+
 
 export const Example = ({ children }) => (
   <aside className="p-6 shadow-inner bg-gray-100 rounded">
@@ -11,6 +13,18 @@ export const Example = ({ children }) => (
 # Amplify UI (React)
 
 > See: [⚡️Amplify UI⚡️ – Customer Use-Cases](https://quip-amazon.com/kcDSA8GAamK1)
+
+
+## Authenticator Example Legacy Code
+
+<Example>
+  <AmplifyAuthenticator>
+    <div>
+      My App
+      <AmplifySignOut />
+    </div>
+  </AmplifyAuthenticator>
+  </Example>
 
 ## Authenticator with Default Theme
 

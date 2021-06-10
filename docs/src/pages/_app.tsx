@@ -1,28 +1,33 @@
 import * as UI from "@aws-amplify/ui-react";
 import { MDXProvider } from "@mdx-js/react";
 import { Amplify } from "aws-amplify";
-import Highlight, { defaultProps } from "prism-react-renderer";
+import Highlight, { defaultProps, Language } from "prism-react-renderer";
 import theme from "prism-react-renderer/themes/nightOwl";
-import { Sandpack } from "react-smooshpack";
+import { Sandpack, SandpackPredefinedTemplate } from "react-smooshpack";
 
 import "react-smooshpack/dist/index.css";
 import "tailwindcss/tailwind.css";
 
 import "@aws-amplify/ui-react/styles.css";
 
-
-Amplify.configure({});
+import awsmobile from "./aws-exports";
+Amplify.configure(awsmobile);
 const components = {
   code({ children, className = "template-jsx", sandbox, template = "react" }) {
     if (sandbox) {
-      return <Sandpack files={{ "/App.js": children }} template={template} />;
+      return (
+        <Sandpack
+          files={{ "/App.js": children }}
+          template={template as SandpackPredefinedTemplate}
+        />
+      );
     }
 
     return (
       <Highlight
         {...defaultProps}
         code={children.trim()}
-        language={className.split("-").pop()}
+        language={className.split("-").pop() as Language}
         theme={theme}
       >
         {({ className, style, tokens, getLineProps, getTokenProps }) => (
