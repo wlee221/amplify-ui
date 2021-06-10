@@ -10,24 +10,21 @@ import "tailwindcss/tailwind.css";
 
 import "@aws-amplify/ui-react/styles.css";
 
-import awsmobile from "./aws-exports";
+import awsmobile from "../../aws-exports";
 Amplify.configure(awsmobile);
 const components = {
   code({ children, className = "template-jsx", sandbox, template = "react" }) {
     if (sandbox) {
-      return (
-        <Sandpack
-          files={{ "/App.js": children }}
-          template={template as SandpackPredefinedTemplate}
-        />
-      );
+      // @ts-ignore
+      return <Sandpack files={{ "/App.js": children }} template={template} />;
     }
 
     return (
       <Highlight
         {...defaultProps}
         code={children.trim()}
-        language={className.split("-").pop() as Language}
+        // @ts-ignore
+        language={className.split("-").pop()}
         theme={theme}
       >
         {({ className, style, tokens, getLineProps, getTokenProps }) => (
