@@ -1,5 +1,5 @@
 import { Amplify } from "aws-amplify";
-import { AmplifyProvider, components, theme } from "@aws-amplify/ui-react";
+import { AmplifyProvider, components, theme, AmplifyS3Album } from "@aws-amplify/ui-react";
 import { customComponents } from "../components/customComponents";
 
 export const Example = ({ children }) => (
@@ -11,6 +11,11 @@ export const Example = ({ children }) => (
 # Amplify UI (React)
 
 > See: [⚡️Amplify UI⚡️ – Customer Use-Cases](https://quip-amazon.com/kcDSA8GAamK1)
+
+## Authenticator with old s3images
+<Example>
+  <AmplifyS3Album />
+</Example>
 
 ## Authenticator with Default Theme
 

@@ -1,6 +1,7 @@
 {
   "private": true,
   "scripts": {
+    "test:amplify-ui-react": "jest packages/amplify-ui-react",
     "dev": "cd docs && yarn dev",
     "dev:vue": "cd vue-docs && yarn serve --port 3001 --host localhost",
     "dev:angular": "cd angular-docs && yarn start",

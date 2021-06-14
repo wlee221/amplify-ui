@@ -10,7 +10,8 @@ import "tailwindcss/tailwind.css";
 
 import "@aws-amplify/ui-react/styles.css";
 
-Amplify.configure({});
+import aws_exports from "../../aws-exports";
+Amplify.configure(aws_exports);
 const components = {
   code({ children, className = "template-jsx", sandbox, template = "react" }) {
     if (sandbox) {

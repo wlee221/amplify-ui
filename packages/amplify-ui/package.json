@@ -9,12 +9,13 @@
   "scripts": {
     "format": "echo \"Not implemented\"",
     "test": "webpack",
-    "start": "webpack-dev-server",
+    "start": "webpack serve",
     "clean": "rimraf dist lib",
     "build": "npm run clean && webpack && copyfiles -u 1 ./src/*.css.d.ts ./lib"
   },
   "license": "Apache-2.0",
   "devDependencies": {
+    "@webpack-cli/serve": "^1.5.1",
     "autoprefixer": "^9.5.1",
     "copyfiles": "^2.1.0",
     "css-loader": "^2.1.1",
