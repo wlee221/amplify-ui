@@ -1,5 +1,5 @@
 import { Amplify } from "aws-amplify";
-import { AmplifyProvider, components, theme, AmplifyS3Album } from "@aws-amplify/ui-react";
+import { AmplifyProvider, components, theme, AmplifyS3Album, AmplifyChatbot, AmplifyAuthenticator, AmplifySignOut } from "@aws-amplify/ui-react";
 import { customComponents } from "../components/customComponents";
 
 export const Example = ({ children }) => (
@@ -12,10 +12,65 @@ export const Example = ({ children }) => (
 
 > See: [⚡️Amplify UI⚡️ – Customer Use-Cases](https://quip-amazon.com/kcDSA8GAamK1)
 
-## Authenticator with old s3images
+## Authenticator with Legacy s3Album
+
+
+
 <Example>
   <AmplifyS3Album />
 </Example>
+
+```jsx
+  import { AmplifyS3Album } from "@aws-amplify/ui-react";
+
+  <AmplifyS3Album />
+```
+
+## Authenticator With Legacy Chatbot
+<Example>
+  <AmplifyChatbot
+    textEnabled="true"
+    botName="yourBotName"
+    botTitle="My ChatBot"
+    welcomeMessage="Hello, how can I help you sir?"
+  />
+</Example>
+
+```jsx
+
+import { AmplifyChatbot } from "@aws-amplify/ui-react";
+
+<AmplifyChatbot
+    textEnabled="true"
+    botName="yourBotName"
+    botTitle="My ChatBot"
+    welcomeMessage="Hello, how can I help you sir?"
+  />
+```
+
+
+## Authenticator With Legacy Authenticator
+<Example>
+  <AmplifyAuthenticator>
+    <div>
+      My App
+      <AmplifySignOut />
+    </div>
+  </AmplifyAuthenticator>
+</Example>
+
+
+```jsx
+
+import { AmplifyAuthenticator, AmplifySignOut } from "@aws-amplify/ui-react";
+
+<AmplifyAuthenticator>
+    <div>
+      My App
+      <AmplifySignOut />
+    </div>
+  </AmplifyAuthenticator>
+```
 
 ## Authenticator with Default Theme
 
