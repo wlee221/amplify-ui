@@ -13,6 +13,7 @@ if (typeof window.URL.createObjectURL === 'undefined') {
 class MockWorker implements Worker {
 	onmessage = noOp;
 	postMessage = noOp;
+	onmessageerror = noOp;
 	terminate = noOp;
 	addEventListener = noOp;
 	removeEventListener = noOp;
