@@ -9,12 +9,18 @@
     "build:angular:watch": "cd packages/angular && yarn build --watch",
     "build:vue": "cd vue-docs && yarn build"
   },
-  "workspaces": [
-    "docs",
-    "vue-docs",
-    "angular-docs",
-    "packages/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "docs",
+      "vue-docs",
+      "angular-docs",
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/ts-jest",
+      "**/ts-jest/**"
+    ]
+  },
   "resolutions": {
     "@mdx-js/mdx/**/trim": "^0.0.3",
     "ws": "^7.4.6"
