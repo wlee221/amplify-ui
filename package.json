@@ -25,6 +25,7 @@
   "workspaces": [
     "docs",
     "angular-docs",
+    "chakra-app",
     "environments/*",
     "examples/*",
     "packages/*"
