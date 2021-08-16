@@ -1,12 +1,14 @@
 import React from 'react';
-import { View } from '@aws-amplify/ui-react';
-import { Box } from '@chakra-ui/react';
+import { View, Flex } from '@aws-amplify/ui-react';
+import { Box, useTheme } from '@chakra-ui/react';
 
 const App = () => {
+  const theme = useTheme();
   return (
-    <View>
-      <Box bg="orange.100">Chakra Theming</Box>
-    </View>
+    <Flex>
+      <Box bg="orange.100">Chakra Box</Box>
+      <View backgroundColor={theme.colors.orange[100]}>Amplify View</View>
+    </Flex>
   );
 };
 
