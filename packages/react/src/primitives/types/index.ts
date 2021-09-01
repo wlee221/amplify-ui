@@ -1,6 +1,7 @@
 export * from './badge';
 export * from './base';
 export * from './button';
+export * from './checkboxField';
 export * from './collection';
 export * from './divider';
 export * from './flex';
