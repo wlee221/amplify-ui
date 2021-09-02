@@ -84,3 +84,10 @@ export const useAmplifyFieldID = (id?: string) => {
     return `amplify-field-${nanoid()}`;
   }, [id]);
 };
+
+/**
+ * Returns an empty string or undefined based on a boolean flag param
+ * @param active
+ * @returns ''|undefined
+ */
+export const addAttr = (active: boolean) => (active ? '' : undefined);

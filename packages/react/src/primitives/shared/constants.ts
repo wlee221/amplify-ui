@@ -4,6 +4,7 @@ export enum ComponentClassNames {
   Card = 'amplify-card',
   CheckboxField = 'amplify-checkboxfield',
   CheckboxFieldBox = 'amplify-checkboxfield__box',
+  CheckboxFieldIcon = 'amplify-checkboxfield__icon',
   CheckboxFieldLabel = 'amplify-checkboxfield__label',
   Divider = 'amplify-divider',
   FieldDescription = 'amplify-field__description',

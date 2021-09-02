@@ -4,8 +4,10 @@ import classNames from 'classnames';
 import { View } from '../View';
 import { Label } from '../Label';
 import { Input } from '../Input';
-import { ComponentClassNames, useAmplifyFieldID } from '../shared';
+import { ComponentClassNames, useAmplifyFieldID, addAttr } from '../shared';
 import { CheckboxFieldProps } from '../types';
+import { useCheckbox } from './useCheckbox';
+import { IconCheck, IconCheckBox } from '../Icon';
 
 export const CheckboxField: React.FC<CheckboxFieldProps> = (props) => {
   const {
@@ -18,10 +20,20 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = (props) => {
     isDisabled,
     name,
     value,
+    onChange,
+    isChecked,
+    defaultChecked,
+    checkColor = 'white',
     ...rest
   } = props;
 
   const fieldId = useAmplifyFieldID(id);
+  const { isOn, changeHandler } = useCheckbox({
+    onChange,
+    isChecked,
+    defaultChecked,
+    isDisabled,
+  });
 
   return (
     <Label
@@ -47,6 +59,7 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = (props) => {
         id={fieldId}
         className={'sr-only'}
         disabled={isDisabled}
+        onChange={changeHandler}
         name={name}
         checked={isOn}
         value={value}
@@ -55,9 +68,9 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = (props) => {
         as={'span'}
         className={ComponentClassNames.CheckboxFieldBox}
         data-checked={addAttr(isOn)}
-        data-disabled={addAttr(isDisabled)}
-        data-focused={addAttr(isFocused)}
-      ></View>
+      >
+        {isOn && <IconCheck color={checkColor} data-checked={addAttr(isOn)} />}
+      </View>
     </Label>
   );
 };

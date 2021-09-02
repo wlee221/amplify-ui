@@ -2,6 +2,7 @@ module.exports = {
   badge: require('./badge'),
   button: require('./button'),
   card: require('./card'),
+  checkboxfield: require('./checkboxfield'),
   divider: require('./divider'),
   field: require('./field'),
   fieldmessages: require('./fieldMessages'),

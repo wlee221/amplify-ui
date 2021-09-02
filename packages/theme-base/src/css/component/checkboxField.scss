@@ -1,0 +1,17 @@
+.amplify-checkboxfield__box {
+  display: inline-flex;
+  width: var(--amplify-components-checkboxfield-default-size);
+  height: var(--amplify-components-checkboxfield-default-size);
+  border-radius: var(--amplify-components-checkboxfield-border-radius);
+  border: var(--amplify-components-checkboxfield-unchecked-border);
+  &[data-checked] {
+    background: var(--amplify-components-checkboxfield-default-background);
+  }
+}
+
+.amplify-checkboxfield__icon {
+  display: none;
+  &[data-checked] {
+    display: block;
+  }
+}
