@@ -268,4 +268,51 @@ describe('mergeVariantsAndOverrides', () => {
 
     expect(mergeVariantsAndOverrides2(variants, overrides)).toEqual(expected);
   });
+
+  it('..root level', () => {
+    const variants: EscapeHatchProps = {
+      'Flex.Button[0]': {
+        color: 'red',
+        size: 'large',
+      },
+    };
+
+    const overrides: EscapeHatchProps = {
+      'Flex.CheckBox[1]': {
+        isEnabled: 'false',
+        size: 'large',
+      },
+    };
+
+    expect(mergeVariantsAndOverrides2(variants, overrides)).toEqual(expected);
+  });
+
+  it('should return merged variants when all variants overridden', () => {
+    const variants: EscapeHatchProps = {
+      'Flex.Button[0]': {
+        color: 'green',
+        size: 'small',
+      },
+      'Flex.CheckBox[1]': {
+        isEnabled: 'true',
+        size: 'small',
+      },
+    };
+
+    const overrides: EscapeHatchProps = {
+      ...expected,
+    };
+
+    expect(mergeVariantsAndOverrides2(variants, overrides)).toEqual(expected);
+  });
+
+  it('should return original variants when override is empty', () => {
+    const variants: EscapeHatchProps = {
+      ...expected,
+    };
+
+    const overrides: EscapeHatchProps = {};
+
+    expect(mergeVariantsAndOverrides2(variants, overrides)).toEqual(expected);
+  });
 });
