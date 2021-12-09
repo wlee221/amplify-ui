@@ -148,6 +148,9 @@ export const mergeVariantsAndOverrides2 = (
   if (!overrides) {
     return variants;
   }
+  if (!variants) {
+    return overrides;
+  }
   const overrideKeys = new Set(Object.keys(overrides));
   const sharedKeys = Object.keys(variants).filter((variantKey) =>
     overrideKeys.has(variantKey)
