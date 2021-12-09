@@ -132,3 +132,32 @@ export function getOverridesFromVariants(
     return { ...overrides, ...variant.overrides };
   }, {});
 }
+
+/**
+ * This helper method is used to merge
+ * variants with overrides
+ * @internal
+ * @param variants
+ * @param overrides
+ * @returns merged variants with overrides
+ */
+export const mergeVariantsAndOverrides2 = (
+  variants: EscapeHatchProps,
+  overrides: EscapeHatchProps
+): EscapeHatchProps => {
+  const overrideKeys = new Set(Object.keys(overrides));
+  const sharedKeys = Object.keys(variants).filter((variantKey) =>
+    overrideKeys.has(variantKey)
+  );
+  const merged = Object.fromEntries(
+    sharedKeys.map((sharedKey) => [
+      sharedKey,
+      { ...variants[sharedKey], ...overrides[sharedKey] },
+    ])
+  );
+  return {
+    ...variants,
+    ...overrides,
+    ...merged,
+  };
+};
