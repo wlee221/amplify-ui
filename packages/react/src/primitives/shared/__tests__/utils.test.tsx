@@ -3,7 +3,9 @@ import {
   getConsecutiveIntArray,
   getOverrideProps,
   getOverridesFromVariants,
+  mergeVariantsAndOverrides2,
   strHasLength,
+  EscapeHatchProps,
 } from '../utils';
 
 const props: ViewProps = {
@@ -230,5 +232,40 @@ describe('getOverridesFromVariants', () => {
     expect(getOverridesFromVariants(variants, selectedVariantValue)).toEqual(
       expected
     );
+  });
+});
+
+describe('mergeVariantsAndOverrides', () => {
+  const expected: EscapeHatchProps = {
+    'Flex.Button[0]': {
+      color: 'red',
+      size: 'large',
+    },
+    'Flex.CheckBox[1]': {
+      isEnabled: 'false',
+      size: 'large',
+    },
+  };
+  it('should return merged variants after applying overrides', () => {
+    const variants: EscapeHatchProps = {
+      'Flex.Button[0]': {
+        color: 'red',
+      },
+      'Flex.CheckBox[1]': {
+        isEnabled: 'false',
+        size: 'small',
+      },
+    };
+
+    const overrides: EscapeHatchProps = {
+      'Flex.Button[0]': {
+        size: 'large',
+      },
+      'Flex.CheckBox[1]': {
+        size: 'large',
+      },
+    };
+
+    expect(mergeVariantsAndOverrides2(variants, overrides)).toEqual(expected);
   });
 });
