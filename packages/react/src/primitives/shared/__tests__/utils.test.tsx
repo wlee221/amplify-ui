@@ -331,4 +331,8 @@ describe('mergeVariantsAndOverrides', () => {
 
     expect(mergeVariantsAndOverrides2(null, overrides)).toEqual(expected);
   });
+
+  it('should return null when both variant & override are null', () => {
+    expect(mergeVariantsAndOverrides2(null, null)).toEqual(null);
+  });
 });

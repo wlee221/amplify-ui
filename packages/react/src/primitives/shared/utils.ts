@@ -145,6 +145,9 @@ export const mergeVariantsAndOverrides2 = (
   variants: EscapeHatchProps,
   overrides: EscapeHatchProps
 ): EscapeHatchProps => {
+  if (!variants && !overrides) {
+    return null;
+  }
   if (!overrides) {
     return variants;
   }
