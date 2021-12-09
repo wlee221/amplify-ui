@@ -145,6 +145,9 @@ export const mergeVariantsAndOverrides2 = (
   variants: EscapeHatchProps,
   overrides: EscapeHatchProps
 ): EscapeHatchProps => {
+  if (!overrides) {
+    return variants;
+  }
   const overrideKeys = new Set(Object.keys(overrides));
   const sharedKeys = Object.keys(variants).filter((variantKey) =>
     overrideKeys.has(variantKey)

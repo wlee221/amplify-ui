@@ -315,4 +315,12 @@ describe('mergeVariantsAndOverrides', () => {
 
     expect(mergeVariantsAndOverrides2(variants, overrides)).toEqual(expected);
   });
+
+  it('should return original variants when override is null', () => {
+    const variants: EscapeHatchProps = {
+      ...expected,
+    };
+
+    expect(mergeVariantsAndOverrides2(variants, null)).toEqual(expected);
+  });
 });
