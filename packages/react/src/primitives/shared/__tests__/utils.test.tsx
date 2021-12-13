@@ -269,7 +269,7 @@ describe('mergeVariantsAndOverrides', () => {
     expect(mergeVariantsAndOverrides2(variants, overrides)).toEqual(expected);
   });
 
-  it('..root level', () => {
+  it('should return merged variants when override includes new control', () => {
     const variants: EscapeHatchProps = {
       'Flex.Button[0]': {
         color: 'red',
