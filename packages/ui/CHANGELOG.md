@@ -1,5 +1,11 @@
 # @aws-amplify/ui
 
+## 3.0.6
+
+### Patch Changes
+
+- bba3242af: Version bump for all public packages
+
 ## 3.0.5
 
 ### Patch Changes

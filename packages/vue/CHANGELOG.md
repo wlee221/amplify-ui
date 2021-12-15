@@ -1,5 +1,13 @@
 # @aws-amplify/ui-vue
 
+## 2.0.6
+
+### Patch Changes
+
+- bba3242af: Version bump for all public packages
+- Updated dependencies [bba3242af]
+  - @aws-amplify/ui@3.0.6
+
 ## 2.0.5
 
 ### Patch Changes
