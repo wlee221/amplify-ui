@@ -20,7 +20,7 @@ jobs:
     # https://github.community/t/workflow-run-not-working-as-expected/139342
     if: |
       github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.head_branch == 'main'
+      github.event.workflow_run.head_branch == 'test-branch-workflow'
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
@@ -31,16 +31,16 @@ jobs:
           cache: 'yarn'
       - name: Install and build packages
         run: yarn --frozen-lockfile --prefer-offline && yarn build
-      - name: Add changeset that bumps all public packages
-        # There needs to be a changeset for @aws-amplify/ui[-framework] to publish.
-        run: cp .github/changeset-presets/bump-versions.md .changeset
-      - name: Run changeset version to next tag
-        run: yarn version:next
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Create .npmrc
-        run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> .npmrc
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Publish to next tag
-        run: yarn publish:next
+      # - name: Add changeset that bumps all public packages
+      #   # There needs to be a changeset for @aws-amplify/ui[-framework] to publish.
+      #   run: cp .github/changeset-presets/bump-versions.md .changeset
+      # - name: Run changeset version to next tag
+      #   run: yarn version:next
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Create .npmrc
+      #   run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> .npmrc
+      #   env:
+      #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # - name: Publish to next tag
+      #   run: yarn publish:next

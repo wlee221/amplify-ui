@@ -5,10 +5,11 @@ name: Tests
 
 on:
   push:
-    branches: [main]
+    branches: [test-workflow-main]
 
-  pull_request_target:
-    branches: [main]
+  # TODO: put this to pull_request_target once we hit latest
+  pull_request:
+    branches: [test-branch-workflow]
     types: [opened, synchronize, labeled]
 
 permissions:
