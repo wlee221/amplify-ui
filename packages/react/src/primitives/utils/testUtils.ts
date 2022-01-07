@@ -10,16 +10,18 @@ export const useTestId = (testId: string, component: string) => {
 export const errorMessageWrapper = (fn: () => void, message: string) => {
   try {
     fn();
-  } catch (error) {
+  } catch (error: unknown) {
     // Formatting below is intentional
     // and displays below Jest error message
-    error.message += `
+    if (error instanceof Error) {
+      error.message += `
 
--- Custom Error Message --
-${message}
+  -- Custom Error Message --
+  ${message}
 
-`;
-    console.error(error);
-    throw new Error(error);
+  `;
+      console.error(error);
+      throw error;
+    }
   }
 };
