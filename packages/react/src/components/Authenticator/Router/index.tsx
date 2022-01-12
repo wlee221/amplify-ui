@@ -38,9 +38,6 @@ export function Router({
 
   const { Header, Footer } = components || {};
 
-  console.log({ ...auth });
-  console.log(Header);
-
   if (['authenticated', 'signOut'].includes(route)) {
     return children({ signOut, user });
   }

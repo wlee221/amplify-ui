@@ -4,6 +4,7 @@ import * as React from 'react';
 
 import {
   AuthenticatorContext,
+  AuthenticatorContextValue,
   AuthenticatorProps,
   ProviderProps,
 } from './context';
@@ -56,9 +57,7 @@ export const Provider = ({ children }) => {
     setHasAuthContext(true);
   };
 
-  const providerValue: ProviderProps = {
-    ...providerProps,
-    hasAuthContext,
+  const providerValue = {
     passAuthContext,
   };
 
@@ -76,11 +75,13 @@ const useAuthenticatorDefault = {
   components: defaultComponents,
 };
 
-export const useAuthenticator = () => {
+export const useAuthenticator = (): Omit<
+  AuthenticatorContextValue,
+  'hasAuthContext' | 'passAuthContext'
+> => {
   const context = React.useContext(AuthenticatorContext);
-  const { hasAuthContext, passAuthContext, ...machineProps } = context;
-  if (!context || hasAuthContext == false) return useAuthenticatorDefault;
-  else return machineProps;
+  const { passAuthContext, ...machineProps } = context;
+  return { ...useAuthenticatorDefault, ...machineProps };
 };
 
 export { ProviderProps };
