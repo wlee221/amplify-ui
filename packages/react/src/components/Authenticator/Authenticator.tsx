@@ -1,4 +1,7 @@
+import * as React from 'react';
+
 import { Provider, ProviderProps } from './Provider';
+import { AuthenticatorContext } from './Provider/context';
 import { ResetPassword } from './ResetPassword';
 import { Router, RouterProps } from './Router';
 import { SetupTOTP } from './SetupTOTP';
@@ -18,16 +21,38 @@ export function Authenticator({
   socialProviders,
   variation,
 }: AuthenticatorProps) {
-  return (
-    <Provider
-      components={components}
-      initialState={initialState}
-      loginMechanisms={loginMechanisms}
-      services={services}
-      signUpAttributes={signUpAttributes}
-      socialProviders={socialProviders}
-    >
+  const { passAuthContext } = React.useContext(AuthenticatorContext);
+  const duplicateProviderExists = !!passAuthContext;
+  console.log(
+    duplicateProviderExists
+      ? 'duplicate provider exists'
+      : 'no provider is above authenticator'
+  );
+
+  const RouterWrapper = ({ children }) => {
+    const { passAuthContext, hasAuthContext } =
+      React.useContext(AuthenticatorContext);
+    React.useEffect(() => {
+      if (passAuthContext && !hasAuthContext) {
+        passAuthContext({
+          components,
+          initialState,
+          loginMechanisms,
+          services,
+          signUpAttributes,
+          socialProviders,
+        });
+      }
+    });
+
+    return (
       <Router className={className} children={children} variation={variation} />
+    );
+  };
+
+  return (
+    <Provider>
+      <RouterWrapper>{children}</RouterWrapper>
     </Provider>
   );
 }

@@ -1,45 +1,53 @@
-import {
-  AuthenticatorMachineOptions,
-  createAuthenticatorMachine,
-  getServiceFacade,
-} from '@aws-amplify/ui';
+import { createAuthenticatorMachine, getServiceFacade } from '@aws-amplify/ui';
 import { useMachine } from '@xstate/react';
 import * as React from 'react';
-import generateContext from 'react-generate-context';
 
-import type { PartialDeep } from '../../../types';
+import {
+  AuthenticatorContext,
+  AuthenticatorProps,
+  ProviderProps,
+} from './context';
 import { defaultComponents } from './defaultComponents';
 
-export type ProviderProps = AuthenticatorMachineOptions & {
-  components?: PartialDeep<typeof defaultComponents>;
-  services?: AuthenticatorMachineOptions['services'];
+export const Provider = ({ children }) => {
+  const [providerProps, setProviderProps] =
+    React.useState<AuthenticatorProps>();
+  const [hasAuthContext, setHasAuthContext] = React.useState<boolean>(false);
+
+  const passAuthContext = (authContext: AuthenticatorProps) => {
+    setProviderProps({ ...authContext });
+    setHasAuthContext(true);
+  };
+
+  const providerValue: ProviderProps = {
+    ...providerProps,
+    hasAuthContext,
+    passAuthContext,
+  };
+
+  return (
+    <AuthenticatorContext.Provider value={providerValue}>
+      {children}
+    </AuthenticatorContext.Provider>
+  );
 };
 
-const useAuthenticatorValue = ({
-  components: customComponents,
-  initialState,
-  loginMechanisms,
-  socialProviders,
-  signUpAttributes,
-  services,
-}: ProviderProps) => {
+export const useAuthenticator = () => {
+  const context = React.useContext(AuthenticatorContext);
+  const { hasAuthContext, ...machineProps } = context;
+  if (!hasAuthContext) return; // Provider hasn't been passed required props yet
+
   const [state, send] = useMachine(
-    () =>
-      createAuthenticatorMachine({
-        initialState,
-        loginMechanisms,
-        services,
-        signUpAttributes,
-        socialProviders,
-      }),
+    () => createAuthenticatorMachine(machineProps),
     {
       devTools: process.env.NODE_ENV === 'development',
     }
   );
 
+  console.log('in useAuthenticator', state.value);
   const components = React.useMemo(
-    () => ({ ...defaultComponents, ...customComponents }),
-    [customComponents]
+    () => ({ ...defaultComponents, ...context.components }),
+    [context.components]
   );
 
   const facade = React.useMemo(
@@ -57,10 +65,4 @@ const useAuthenticatorValue = ({
   };
 };
 
-const [Provider, useAuthenticator] = generateContext(useAuthenticatorValue, {
-  missingProviderMessage:
-    'useAuthenticator is being used outside of an <Provider>',
-  requireProvider: true,
-});
-
-export { Provider, useAuthenticator };
+export { ProviderProps };

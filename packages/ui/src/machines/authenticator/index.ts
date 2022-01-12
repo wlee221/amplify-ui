@@ -20,6 +20,7 @@ export function createAuthenticatorMachine({
   socialProviders,
   services: customServices,
 }: AuthenticatorMachineOptions) {
+  console.log('creating machine...');
   const services = {
     ...defaultServices,
     ...customServices,

@@ -32,12 +32,16 @@ export function Router({
   className,
   variation = 'default',
 }: RouterProps) {
+  const auth = useAuthenticator();
+  if (!auth) return null;
+
   const {
     components: { Header, Footer },
     route,
     signOut,
     user,
-  } = useAuthenticator();
+  } = auth;
+  console.log(route);
 
   if (['authenticated', 'signOut'].includes(route)) {
     return children({ signOut, user });

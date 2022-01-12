@@ -19,6 +19,8 @@ export interface UserNameAliasProps {
 export function UserNameAlias(props: UserNameAliasProps) {
   const { handleInputChange, alias, ...attrs } = props;
   const { _state, _send } = useAuthenticator();
+  // console.log(_state);
+  // console.log(getActorContext(_state));
 
   const { country_code }: ActorContextWithForms = getActorContext(_state);
   const { label, type, error } = getAliasInfoFromContext(_state.context, alias);
