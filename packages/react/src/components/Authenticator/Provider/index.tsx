@@ -9,6 +9,43 @@ import {
 } from './context';
 import { defaultComponents } from './defaultComponents';
 
+// only initialized after machine is created, so
+const MachineProvider = ({ providerProps, children }) => {
+  const { components: customComponents, ...machineProps } = providerProps;
+
+  const [state, send] = useMachine(
+    () => createAuthenticatorMachine(machineProps),
+    {
+      devTools: process.env.NODE_ENV === 'development',
+    }
+  );
+
+  const components = React.useMemo(
+    () => ({ ...defaultComponents, ...customComponents }),
+    [customComponents]
+  );
+
+  const facade = React.useMemo(
+    () => getServiceFacade({ send, state }),
+    [send, state]
+  );
+
+  const providerValue = {
+    /** @deprecated For internal use only */
+    _send: send,
+    /** @deprecated For internal use only */
+    _state: state,
+    components,
+    ...facade,
+  };
+
+  return (
+    <AuthenticatorContext.Provider value={providerValue}>
+      {children}
+    </AuthenticatorContext.Provider>
+  );
+};
+
 export const Provider = ({ children }) => {
   const [providerProps, setProviderProps] =
     React.useState<AuthenticatorProps>();
@@ -25,44 +62,25 @@ export const Provider = ({ children }) => {
     passAuthContext,
   };
 
-  return (
+  return hasAuthContext ? (
+    <MachineProvider providerProps={providerProps}>{children}</MachineProvider>
+  ) : (
     <AuthenticatorContext.Provider value={providerValue}>
       {children}
     </AuthenticatorContext.Provider>
   );
 };
 
+const useAuthenticatorDefault = {
+  route: 'idle',
+  components: defaultComponents,
+};
+
 export const useAuthenticator = () => {
   const context = React.useContext(AuthenticatorContext);
-  const { hasAuthContext, ...machineProps } = context;
-  if (!hasAuthContext) return; // Provider hasn't been passed required props yet
-
-  const [state, send] = useMachine(
-    () => createAuthenticatorMachine(machineProps),
-    {
-      devTools: process.env.NODE_ENV === 'development',
-    }
-  );
-
-  console.log('in useAuthenticator', state.value);
-  const components = React.useMemo(
-    () => ({ ...defaultComponents, ...context.components }),
-    [context.components]
-  );
-
-  const facade = React.useMemo(
-    () => getServiceFacade({ send, state }),
-    [send, state]
-  );
-
-  return {
-    /** @deprecated For internal use only */
-    _send: send,
-    /** @deprecated For internal use only */
-    _state: state,
-    components,
-    ...facade,
-  };
+  const { hasAuthContext, passAuthContext, ...machineProps } = context;
+  if (!context || hasAuthContext == false) return useAuthenticatorDefault;
+  else return machineProps;
 };
 
 export { ProviderProps };

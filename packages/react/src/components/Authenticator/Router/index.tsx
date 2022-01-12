@@ -17,7 +17,7 @@ export type RouterProps = {
     signOut,
     user,
   }: {
-    signOut: ReturnType<typeof useAuthenticator>['signOut'];
+    signOut: any;
     user: CognitoUserAmplify;
   }) => JSX.Element;
   variation?: 'default' | 'modal';
@@ -33,15 +33,13 @@ export function Router({
   variation = 'default',
 }: RouterProps) {
   const auth = useAuthenticator();
-  if (!auth) return null;
 
-  const {
-    components: { Header, Footer },
-    route,
-    signOut,
-    user,
-  } = auth;
-  console.log(route);
+  const { components, route, signOut, user } = auth as any;
+
+  const { Header, Footer } = components || {};
+
+  console.log({ ...auth });
+  console.log(Header);
 
   if (['authenticated', 'signOut'].includes(route)) {
     return children({ signOut, user });
