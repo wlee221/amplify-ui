@@ -106,10 +106,14 @@ const components = {
   },
 };
 
-export default function App() {
+const App = () => {
   return (
     <Authenticator components={components}>
       {({ signOut }) => <button onClick={signOut}>Sign out</button>}
     </Authenticator>
   );
+};
+
+export default function AppWithProvider() {
+  return <App />;
 }

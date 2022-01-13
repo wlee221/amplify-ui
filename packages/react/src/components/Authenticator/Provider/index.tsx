@@ -4,9 +4,9 @@ import * as React from 'react';
 
 import {
   AuthenticatorContext,
-  AuthenticatorContextValue,
   AuthenticatorProps,
   ProviderProps,
+  useComputeContextValue,
 } from './context';
 import { defaultComponents } from './defaultComponents';
 
@@ -38,6 +38,7 @@ const MachineProvider = ({ providerProps, children }) => {
     _state: state,
     components,
     ...facade,
+    serviceHasStarted: true,
   };
 
   return (
@@ -57,17 +58,23 @@ export const Provider = ({ children }) => {
     setHasAuthContext(true);
   };
 
-  const providerValue = {
-    passAuthContext,
-  };
-
-  return hasAuthContext ? (
-    <MachineProvider providerProps={providerProps}>{children}</MachineProvider>
-  ) : (
-    <AuthenticatorContext.Provider value={providerValue}>
-      {children}
-    </AuthenticatorContext.Provider>
-  );
+  if (hasAuthContext) {
+    return (
+      <MachineProvider providerProps={providerProps}>
+        {children}
+      </MachineProvider>
+    );
+  } else {
+    const providerValue = {
+      passAuthContext,
+      serviceHasStarted: false,
+    };
+    return (
+      <AuthenticatorContext.Provider value={providerValue}>
+        {children}
+      </AuthenticatorContext.Provider>
+    );
+  }
 };
 
 const useAuthenticatorDefault = {
@@ -75,13 +82,13 @@ const useAuthenticatorDefault = {
   components: defaultComponents,
 };
 
-export const useAuthenticator = (): Omit<
-  AuthenticatorContextValue,
-  'hasAuthContext' | 'passAuthContext'
+export const useAuthenticator = (): Partial<
+  ReturnType<typeof useComputeContextValue>
 > => {
   const context = React.useContext(AuthenticatorContext);
-  const { passAuthContext, ...machineProps } = context;
-  return { ...useAuthenticatorDefault, ...machineProps };
+  const { passAuthContext, serviceHasStarted, ...machineProps } = context;
+  const machineHasStarted = !!machineProps._state;
+  return machineHasStarted ? machineProps : useAuthenticatorDefault;
 };
 
 export { ProviderProps };

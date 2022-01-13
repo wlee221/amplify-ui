@@ -34,9 +34,9 @@ export function Router({
 }: RouterProps) {
   const auth = useAuthenticator();
 
-  const { components, route, signOut, user } = auth as any;
+  const { components, route, signOut, user } = auth;
 
-  const { Header, Footer } = components || {};
+  const { Header, Footer } = components;
 
   if (['authenticated', 'signOut'].includes(route)) {
     return children({ signOut, user });

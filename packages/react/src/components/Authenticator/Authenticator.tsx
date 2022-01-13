@@ -21,19 +21,16 @@ export function Authenticator({
   socialProviders,
   variation,
 }: AuthenticatorProps) {
-  const { passAuthContext } = React.useContext(AuthenticatorContext);
-  const duplicateProviderExists = !!passAuthContext;
-  console.log(
-    duplicateProviderExists
-      ? 'duplicate provider exists'
-      : 'no provider is above authenticator'
-  );
+  const { serviceHasStarted } = React.useContext(AuthenticatorContext);
+  const duplicateProviderExists = serviceHasStarted !== undefined;
 
-  const RouterWrapper = ({ children }) => {
-    const { passAuthContext, hasAuthContext } =
+  const ContextConsumer = ({ children }) => {
+    const { passAuthContext, serviceHasStarted } =
       React.useContext(AuthenticatorContext);
+
     React.useEffect(() => {
-      if (passAuthContext && !hasAuthContext) {
+      console.log(serviceHasStarted, passAuthContext);
+      if (serviceHasStarted == false && passAuthContext) {
         passAuthContext({
           components,
           initialState,
@@ -43,18 +40,22 @@ export function Authenticator({
           socialProviders,
         });
       }
-    });
+    }, []);
 
     return (
       <Router className={className} children={children} variation={variation} />
     );
   };
 
-  return (
-    <Provider>
-      <RouterWrapper>{children}</RouterWrapper>
-    </Provider>
-  );
+  if (duplicateProviderExists) {
+    return <ContextConsumer children={children} />;
+  } else {
+    return (
+      <Provider>
+        <ContextConsumer children={children} />
+      </Provider>
+    );
+  }
 }
 
 Authenticator.Provider = Provider;

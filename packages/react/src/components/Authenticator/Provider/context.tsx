@@ -51,7 +51,15 @@ export const useComputeContextValue = (providerProps: ProviderProps) => {
 export type AuthenticatorContextValue = Partial<
   ReturnType<typeof useComputeContextValue>
 > & {
+  /**
+   * Used to pass in authenticator props to the provider,
+   * such as services, components, etc .
+   */
   passAuthContext?: (props: AuthenticatorProps) => void;
+  /**
+   * True if the provider has created and started authMachine
+   */
+  serviceHasStarted?: boolean;
 };
 
 export const AuthenticatorContext: React.Context<AuthenticatorContextValue> =
