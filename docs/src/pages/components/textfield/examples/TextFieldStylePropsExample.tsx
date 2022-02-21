@@ -15,8 +15,9 @@ export const TextFieldStylePropsExample = () => {
           Name:
         </Text>
       }
-      backgroundColor={tokens.colors.background.primary}
-      color={tokens.colors.black}
+      padding={tokens.space.large}
+      backgroundColor={tokens.colors.brand.primary[80]}
+      color={tokens.colors.font.inverse}
       width="400px"
     />
   );

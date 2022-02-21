@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { SearchField } from '@aws-amplify/ui-react';
 
-export const RefExample = () => {
+export const SearchFieldRefExample = () => {
   const inputRef = React.useRef(null);
   const searchButtonRef = React.useRef(null);
 

@@ -1,7 +1,7 @@
-import { PhoneNumberField, Flex, Text } from '@aws-amplify/ui-react';
+import { PhoneNumberField, Flex } from '@aws-amplify/ui-react';
 import * as React from 'react';
 
-export const RefExample = () => {
+export const PhoneNumberFieldRefExample = () => {
   const inputRef = React.useRef(null);
   const countryCodeRef = React.useRef(null);
 

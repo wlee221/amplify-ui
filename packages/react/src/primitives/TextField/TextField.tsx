@@ -27,6 +27,7 @@ const TextFieldPrimitive: Primitive<TextFieldProps, 'input'> = (props, ref) => {
     outerStartComponent,
     size,
     testId,
+    inputStyles,
     ..._rest
   } = props;
 
@@ -45,6 +46,7 @@ const TextFieldPrimitive: Primitive<TextFieldProps, 'input'> = (props, ref) => {
       )}
       data-size={size}
       testId={testId}
+      {...baseStyleProps}
       {...flexContainerStyleProps}
     >
       <Label htmlFor={fieldId} visuallyHidden={labelHidden}>
@@ -67,7 +69,7 @@ const TextFieldPrimitive: Primitive<TextFieldProps, 'input'> = (props, ref) => {
           id={fieldId}
           ref={ref}
           size={size}
-          {...baseStyleProps}
+          {...inputStyles}
           {...rest}
         />
       </FieldGroup>

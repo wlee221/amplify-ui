@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { PasswordField } from '@aws-amplify/ui-react';
 
-export const RefExample = () => {
+export const PasswordFieldRefExample = () => {
   const inputRef = React.useRef(null);
   const showPasswordButtonRef = React.useRef(null);
 
