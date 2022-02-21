@@ -4,6 +4,7 @@ import { IdProvider } from '@radix-ui/react-id';
 import { createTheme, defaultTheme, Theme as UiTheme } from '@aws-amplify/ui';
 
 import { AmplifyContext } from './AmplifyContext';
+import { Authenticator } from '../Authenticator';
 
 export type Theme = UiTheme;
 export type ColorMode = 'system' | 'light' | 'dark';
@@ -36,13 +37,15 @@ export function AmplifyProvider({
         theme: webTheme,
       }}
     >
-      <IdProvider>
-        <div>{children}</div>
-        <style
-          id={`amplify-theme-${name}`}
-          dangerouslySetInnerHTML={{ __html: cssText }}
-        />
-      </IdProvider>
+      <Authenticator.Provider>
+        <IdProvider>
+          <div>{children}</div>
+          <style
+            id={`amplify-theme-${name}`}
+            dangerouslySetInnerHTML={{ __html: cssText }}
+          />
+        </IdProvider>
+      </Authenticator.Provider>
     </AmplifyContext.Provider>
   );
 }
