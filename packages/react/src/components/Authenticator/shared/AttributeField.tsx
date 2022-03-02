@@ -12,7 +12,19 @@ import {
 } from '../../../primitives';
 import { useAuthenticator } from '../hooks/useAuthenticator';
 
-export function AttributeField({ name, ...passedAttrs }) {
+export interface AttributeFieldProps {
+  name: string;
+  type: string;
+  required: boolean;
+  placeholder: string;
+  label: string;
+  autoComplete: string;
+  labelHidden: string;
+  defaultCountryCode: string;
+  dialCodeList: Array<string>;
+}
+
+export function AttributeField({ name, ...passedProps }) {
   const { _state } = useAuthenticator();
   const { country_code } = getActorContext(_state) as ActorContextWithForms;
 
@@ -23,54 +35,48 @@ export function AttributeField({ name, ...passedAttrs }) {
     return null;
   }
 
-  const defaultAttrs = authInputAttributes[name];
+  const defaultProps = authInputAttributes[name];
 
   // merged passed attributes with default attributes
-  const attrs = { ...defaultAttrs, ...passedAttrs } as Record<string, string>;
+  const props = { ...defaultProps, ...passedProps } as Record<string, any>;
 
-  // "autocomplete" is "autoComplete" in React:
-  if (!!attrs.autocomplete) {
-    attrs.autoComplete = attrs.autoComplete || attrs.autocomplete;
-    delete attrs.autocomplete;
-  }
-
-  const label = translate<string>(attrs.label);
-  const placeholder = translate<string>(attrs.placeholder);
+  const label = translate<string>(props.label);
+  const placeholder = translate<string>(props.placeholder);
 
   if (name === 'phone_number') {
     return (
       <PhoneNumberField
+        {...props}
+        autoComplete={props.autoComplete || props.autocomplete}
         label={label}
         placeholder={placeholder}
         defaultCountryCode={country_code}
         isRequired
-        key="phone"
         name="phone"
         labelHidden
-        {...attrs}
       />
     );
   } else if (name === 'password') {
     return (
       <PasswordField
+        {...props}
+        autoComplete={props.autoComplete || props.autocomplete}
         label={label}
         placeholder={placeholder}
         isRequired
         labelHidden
         name="password"
-        key={name}
-        {...attrs}
       />
     );
   } else {
     return (
       <TextField
+        {...props}
+        autoComplete={props.autoComplete || props.autocomplete}
         label={label}
         placeholder={placeholder}
         isRequired
         labelHidden
-        key={name}
-        {...attrs}
       />
     );
   }
