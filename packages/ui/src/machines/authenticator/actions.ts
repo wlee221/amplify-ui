@@ -132,7 +132,7 @@ export const handleInput = assign({
 export const handleSubmit = assign({
   formValues: (context, event: AuthEvent) => ({
     ...context['formValues'],
-    ...event.data,
+    ...(event.data || {}),
   }),
 });
 
