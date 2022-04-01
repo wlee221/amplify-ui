@@ -52,6 +52,7 @@ export function signInActor({ services }: SignInMachineOptions) {
               on: {
                 SUBMIT: { actions: 'handleSubmit', target: 'submit' },
                 CHANGE: { actions: 'handleInput' },
+                SET_ERROR: { actions: 'setRemoteError' },
                 FEDERATED_SIGN_IN: 'federatedSignIn',
               },
             },

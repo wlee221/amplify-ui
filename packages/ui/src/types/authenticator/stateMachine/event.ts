@@ -18,6 +18,7 @@ export type AuthEventTypes =
   | 'RESET_PASSWORD'
   | 'SIGN_IN'
   | 'SIGN_OUT'
+  | 'SET_ERROR'
   | 'SIGN_UP'
   | 'SKIP'
   | 'SUBMIT'

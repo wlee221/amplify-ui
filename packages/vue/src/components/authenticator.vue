@@ -43,6 +43,7 @@ const {
   signUpAttributes,
   socialProviders,
   hideSignUp,
+  emailLink,
   formFields,
 } = withDefaults(
   defineProps<{
@@ -54,6 +55,7 @@ const {
     variation?: 'default' | 'modal';
     socialProviders?: SocialProvider[];
     formFields?: AuthFormFields;
+    emailLink?: boolean;
   }>(),
   {
     variation: 'default',
@@ -74,7 +76,7 @@ const emit = defineEmits([
 ]);
 const machine = createAuthenticatorMachine();
 
-const service = useInterpret(machine);
+const service = useInterpret(machine, { devTools: true });
 let unsubscribeHub: () => void;
 let unsubscribeMachine: () => void;
 
@@ -98,6 +100,7 @@ unsubscribeMachine = service.subscribe((newState) => {
         signUpAttributes,
         services,
         formFields,
+        emailLink,
       },
     });
     hasInitialized.value = true;

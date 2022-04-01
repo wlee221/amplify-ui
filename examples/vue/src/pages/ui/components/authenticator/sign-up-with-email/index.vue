@@ -43,6 +43,7 @@ const services = {
     :services="services"
     :form-fields="formFields"
     initial-state="signUp"
+    :email-link="true"
   >
     <template v-slot="{ user, signOut }">
       <h1>Hello {{ user.username }}!</h1>

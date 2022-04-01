@@ -1,6 +1,20 @@
 <script setup lang="ts">
-import { computed, useAttrs, toRefs, onBeforeMount } from 'vue';
-import { getFormDataFromEvent, translate } from '@aws-amplify/ui';
+import {
+  computed,
+  useAttrs,
+  toRefs,
+  onUnmounted,
+  onMounted,
+  ref,
+  ComputedRef,
+  Ref,
+} from 'vue';
+import {
+  getActorState,
+  getFormDataFromEvent,
+  SignUpState,
+  translate,
+} from '@aws-amplify/ui';
 
 import { useAuthenticator, useAuth } from '../composables/useAuth';
 import { createSharedComposable } from '@vueuse/core';
@@ -10,9 +24,18 @@ const attrs = useAttrs();
 const emit = defineEmits(['confirmSignUpSubmit', 'lostCodeClicked']);
 
 const useAuthShared = createSharedComposable(useAuthenticator);
-const { isPending, error, codeDeliveryDetails } = toRefs(useAuthShared());
+const { isPending, error, codeDeliveryDetails, toSignIn, setError } = toRefs(
+  useAuthShared()
+);
 const { submitForm, updateForm, resendCode } = useAuthShared();
 const { state } = useAuth();
+
+const actorState = computed(() =>
+  getActorState(state.value)
+) as ComputedRef<SignUpState>;
+
+const emailLink = actorState.value.context.emailLink;
+let remoteError = actorState.value.context.remoteError;
 
 // Only two types of delivery methods is EMAIL or SMS
 const confirmSignUpHeading = computed(() => {
@@ -23,6 +46,7 @@ const confirmSignUpHeading = computed(() => {
     : translate('We Sent A Code');
 });
 
+const interval = ref(null as unknown as NodeJS.Timer);
 const resendCodeText = computed(() => translate('Resend Code'));
 const confirmText = computed(() => translate('Confirm'));
 const emailMessage = translate(
@@ -43,6 +67,15 @@ const subtitleText = computed(() => {
     : translate(`${defaultMessage}`);
 });
 
+const subText = emailLink
+  ? translate(`Please click on the link in the email to verify your account.
+It will take several minutes to arrive. Leave this window open.`)
+  : subtitleText.value;
+
+const subText2 = translate(
+  'This window will automatically log you in after you click the verify link.'
+);
+
 // Methods
 const onInput = (e: Event): void => {
   const { name, value } = <HTMLInputElement>e.target;
@@ -57,6 +90,19 @@ const onConfirmSignUpSubmit = (e: Event): void => {
   }
 };
 
+const intervalSubmit = (interval: Ref<NodeJS.Timer>) => {
+  const start = Date.now();
+  interval.value = setInterval(() => {
+    if (Date.now() - start > 30000) {
+      clearInterval(interval.value);
+      toSignIn.value();
+      const errorMessage = translate('Error! Time Out!');
+      setError.value(errorMessage);
+      return;
+    }
+    submitForm({ confirmation_code: '000' });
+  }, 5000);
+};
 const submit = (e: Event): void => {
   submitForm(getFormDataFromEvent(e));
 };
@@ -68,6 +114,16 @@ const onLostCodeClicked = (): void => {
     resendCode();
   }
 };
+
+onMounted(() => {
+  if (emailLink) {
+    intervalSubmit(interval);
+  }
+});
+
+onUnmounted(() => {
+  clearInterval(interval.value);
+});
 </script>
 
 <template>
@@ -85,9 +141,14 @@ const onLostCodeClicked = (): void => {
             </base-heading>
           </slot>
           <base-text style="margin-bottom: 1rem">
-            {{ subtitleText }}
+            {{ subText }}
           </base-text>
+          <base-text v-if="emailLink" style="margin-bottom: 1rem">
+            {{ subText2 }}
+          </base-text>
+
           <base-field-set
+            v-if="!emailLink"
             class="amplify-flex"
             style="flex-direction: column"
             :disabled="isPending"
@@ -99,30 +160,32 @@ const onLostCodeClicked = (): void => {
             class="amplify-flex"
             style="flex-direction: column; align-items: unset"
           >
-            <base-alert v-if="error">
-              {{ translate(error) }}
-            </base-alert>
-            <amplify-button
-              class="amplify-field-group__control"
-              data-fullwidth="false"
-              data-loading="false"
-              data-variation="primary"
-              type="submit"
-              style="font-weight: normal"
-              :disabled="isPending"
-            >
-              {{ confirmText }}
-            </amplify-button>
-            <amplify-button
-              class="amplify-field-group__control"
-              data-fullwidth="false"
-              data-variation="default"
-              style="font-weight: normal"
-              type="button"
-              @click.prevent="onLostCodeClicked"
-            >
-              {{ resendCodeText }}
-            </amplify-button>
+            <template v-if="!emailLink">
+              <base-alert v-if="error">
+                {{ translate(error) }}
+              </base-alert>
+              <amplify-button
+                class="amplify-field-group__control"
+                data-fullwidth="false"
+                data-loading="false"
+                data-variation="primary"
+                type="submit"
+                style="font-weight: normal"
+                :disabled="isPending"
+              >
+                {{ confirmText }}
+              </amplify-button>
+              <amplify-button
+                class="amplify-field-group__control"
+                data-fullwidth="false"
+                data-variation="default"
+                style="font-weight: normal"
+                type="button"
+                @click.prevent="onLostCodeClicked"
+              >
+                {{ resendCodeText }}
+              </amplify-button>
+            </template>
             <slot
               name="footer"
               :onConfirmSignUpSubmit="onConfirmSignUpSubmit"

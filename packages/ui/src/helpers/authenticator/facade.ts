@@ -39,6 +39,7 @@ export const getSendEventAliases = (send: Sender<AuthEvent>) => {
     submitForm: sendToMachine('SUBMIT'),
     updateForm: sendToMachine('CHANGE'),
     updateBlur: sendToMachine('BLUR'),
+    setError: sendToMachine('SET_ERROR'),
 
     // Actions that don't immediately invoke a service but instead transition to a screen
     // are prefixed with `to*`

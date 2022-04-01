@@ -179,6 +179,7 @@ export function createAuthenticatorMachine() {
       },
       on: {
         CHANGE: { actions: 'forwardToActor' },
+        SET_ERROR: { actions: 'forwardToActor' },
         BLUR: { actions: 'forwardToActor' },
         SUBMIT: { actions: 'forwardToActor' },
         FEDERATED_SIGN_IN: { actions: 'forwardToActor' },
@@ -244,6 +245,7 @@ export function createAuthenticatorMachine() {
               socialProviders,
               initialState,
               formFields,
+              emailLink,
             } = context.config;
             return {
               loginMechanisms: loginMechanisms ?? cliLoginMechanisms,
@@ -259,6 +261,7 @@ export function createAuthenticatorMachine() {
                 ),
               socialProviders: socialProviders ?? cliSocialProviders.sort(),
               initialState,
+              emailLink,
             };
           },
         }),
@@ -293,6 +296,7 @@ export function createAuthenticatorMachine() {
               loginMechanisms: context.config?.loginMechanisms,
               socialProviders: context.config?.socialProviders,
               formFields: context.config?.formFields,
+              emailLink: context.config?.emailLink,
               passwordSettings: context.config?.passwordSettings,
             });
             return spawn(actor, { name: 'signUpActor' });

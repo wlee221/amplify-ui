@@ -13,6 +13,7 @@ export const facade = {
     val: '',
   },
   change: (data?: AuthEventData) => null,
+  setError: (data?: AuthEventData) => null,
   updateForm: (data?: AuthEventData) => null,
   updateBlur: (data?: AuthEventData) => null,
   resend: (data?: AuthEventData) => null,

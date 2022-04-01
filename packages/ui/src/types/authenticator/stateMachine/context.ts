@@ -29,6 +29,7 @@ export interface AuthContext {
     signUpAttributes?: SignUpAttribute[];
     socialProviders?: SocialProvider[];
     formFields?: AuthFormFields;
+    emailLink?: boolean;
     initialState?: 'signIn' | 'signUp' | 'resetPassword';
     passwordSettings?: PasswordSettings;
   };
@@ -84,6 +85,7 @@ export interface SignUpContext extends BaseFormContext {
   loginMechanisms: Required<AuthContext>['config']['loginMechanisms'];
   socialProviders: Required<AuthContext>['config']['socialProviders'];
   formFields: AuthFormFields;
+  emailLink?: boolean;
   unverifiedAttributes?: Record<string, string>;
 }
 

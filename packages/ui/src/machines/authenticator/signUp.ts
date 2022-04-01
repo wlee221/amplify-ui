@@ -259,15 +259,17 @@ export function createSignUpMachine({ services }: SignUpMachineOptions) {
           return await Auth.signIn(username, password);
         },
         async confirmSignUp(context, event) {
-          const { user, authAttributes, formValues } = context;
+          const { user, authAttributes, formValues, emailLink } = context;
           const { confirmation_code: code } = formValues;
 
           const username =
             get(user, 'username') || get(authAttributes, 'username');
           const { password } = authAttributes;
-
-          await services.handleConfirmSignUp({ username, code });
-
+          if (emailLink) {
+            return await Auth.signIn(username, password);
+          } else {
+            await services.handleConfirmSignUp({ username, code });
+          }
           return await Auth.signIn(username, password);
         },
         async resendConfirmationCode(context, event) {
