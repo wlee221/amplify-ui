@@ -35,7 +35,7 @@ const actorState = computed(() =>
 ) as ComputedRef<SignUpState>;
 
 const emailLink = actorState.value.context.emailLink;
-let remoteError = actorState.value.context.remoteError;
+const intent = actorState.value.context.intent;
 
 // Only two types of delivery methods is EMAIL or SMS
 const confirmSignUpHeading = computed(() => {
@@ -47,7 +47,9 @@ const confirmSignUpHeading = computed(() => {
 });
 
 const interval = ref(null as unknown as NodeJS.Timer);
-const resendCodeText = computed(() => translate('Resend Code'));
+const resendCodeText = computed(() =>
+  emailLink ? translate('Resend Link') : translate('Resend Code')
+);
 const confirmText = computed(() => translate('Confirm'));
 const emailMessage = translate(
   'Your code is on the way. To log in, enter the code we emailed to'
@@ -116,6 +118,10 @@ const onLostCodeClicked = (): void => {
 };
 
 onMounted(() => {
+  if (intent) {
+    // send out resendCode since user is coming from sign in
+    resendCode();
+  }
   if (emailLink) {
     intervalSubmit(interval);
   }
@@ -186,6 +192,16 @@ onUnmounted(() => {
                 {{ resendCodeText }}
               </amplify-button>
             </template>
+            <amplify-button
+              class="amplify-field-group__control"
+              data-fullwidth="false"
+              data-variation="default"
+              style="font-weight: normal"
+              type="button"
+              @click.prevent="onLostCodeClicked"
+            >
+              {{ resendCodeText }}
+            </amplify-button>
             <slot
               name="footer"
               :onConfirmSignUpSubmit="onConfirmSignUpSubmit"
