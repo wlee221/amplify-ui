@@ -127,6 +127,7 @@ export const useAuthenticator = (selector?: Selector) => {
      * object, of which value could easily mutate between compare calls.
      *
      * Instead, we'll use prevFacadeRef for comparison.
+     * @deprecated
      */
     _prevState: AuthMachineState,
     nextState: AuthMachineState
