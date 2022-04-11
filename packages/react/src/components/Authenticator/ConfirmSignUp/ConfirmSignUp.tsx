@@ -1,5 +1,5 @@
-import { translate } from '@aws-amplify/ui';
-
+import { getActorState, SignUpState, translate } from '@aws-amplify/ui';
+import * as React from 'react';
 import { Button } from '../../../primitives/Button';
 import { Flex } from '../../../primitives/Flex';
 import { Heading } from '../../../primitives/Heading';
@@ -21,6 +21,35 @@ export function ConfirmSignUp() {
     context.codeDeliveryDetails,
   ]);
   const { handleChange, handleSubmit } = useFormHandlers();
+  const maxTime = 30000;
+  const { _state, toSignIn, setError, submitForm } = useAuthenticator(
+    (context) => [context.toSignIn, context.setError, context.submitForm]
+  );
+
+  const emailLink = (getActorState(_state) as SignUpState).context?.emailLink;
+  console.log('emailLink', emailLink);
+
+  // ConfirmSignUp.tsx
+  React.useEffect(() => {
+    const start = Date.now();
+    const clearID = setInterval(() => {
+      if (!emailLink) {
+        clearInterval(clearID);
+        return;
+      }
+      if (Date.now() - start > maxTime) {
+        clearInterval(clearID);
+        const errorMessage = translate('Sorry, you have timed out...');
+        toSignIn(); // returns back to sign in page
+        setError(errorMessage as {});
+        return;
+      }
+      submitForm({
+        confirmation_code: '000',
+      } as unknown as React.FormEvent<HTMLFormElement>); // tells xState to send Sign In Request
+    }, 5000);
+    return () => clearInterval(clearID); // clear timer after component is torn down
+  }, [emailLink, setError, toSignIn, submitForm]);
 
   const {
     components: {

@@ -44,6 +44,7 @@ export default function AuthenticatorWithEmail() {
       formFields={formFields}
       services={services}
       initialState="signUp"
+      emailLink={true}
     >
       {({ signOut }) => <button onClick={signOut}>Sign out</button>}
     </Authenticator>

@@ -51,6 +51,7 @@ export function Authenticator({
   variation,
   hideSignUp,
   formFields,
+  emailLink,
 }: AuthenticatorProps) {
   const components = { ...defaultComponents, ...customComponents };
   const machineProps = {
@@ -60,6 +61,7 @@ export function Authenticator({
     signUpAttributes,
     socialProviders,
     formFields,
+    emailLink,
   };
 
   return (

@@ -265,6 +265,7 @@ export function createSignUpMachine({ services }: SignUpMachineOptions) {
           const username =
             get(user, 'username') || get(authAttributes, 'username');
           const { password } = authAttributes;
+          console.log('email link here', emailLink);
           if (emailLink) {
             return await Auth.signIn(username, password);
           } else {
