@@ -6,6 +6,7 @@ import { SetupTOTP } from '../../SetupTOTP';
 import { ConfirmSignIn } from '../../ConfirmSignIn/ConfirmSignIn';
 import { ConfirmVerifyUser, VerifyUser } from '../../VerifyUser';
 import { ConfirmResetPassword, ResetPassword } from '../../ResetPassword';
+import { MagicLink } from '../../MagicLink';
 
 // use the very generic name of Components as this is a temporary interface and is not exported
 interface Components {
@@ -25,6 +26,7 @@ export interface DefaultComponents extends Omit<Components, 'FormFields'> {
   SignIn?: Omit<Components, 'FormFields'>;
   SignUp?: Components;
   VerifyUser?: Omit<Components, 'FormFields'>;
+  MagicLink?: Omit<Components, 'FormFields'>;
 }
 
 export const defaultComponents: DefaultComponents = {
@@ -61,6 +63,10 @@ export const defaultComponents: DefaultComponents = {
   ConfirmVerifyUser: {
     Header: ConfirmVerifyUser.Header,
     Footer: ConfirmVerifyUser.Footer,
+  },
+  MagicLink: {
+    Header: MagicLink.Header,
+    Footer: MagicLink.Footer,
   },
   ForceNewPassword: {
     FormFields: ForceNewPassword.FormFields,

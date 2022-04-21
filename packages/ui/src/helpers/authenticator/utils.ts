@@ -42,11 +42,26 @@ export const censorPhoneNumber = (val: string): string => {
  */
 export const listenToAuthHub = (send: AuthMachineSend) => {
   return Hub.listen('auth', (data) => {
+    console.log('listenToAuthHub: ', { data });
     switch (data.payload.event) {
       // TODO: We can add more cases here, according to
       // https://docs.amplify.aws/lib/auth/auth-events/q/platform/js/
       case 'signOut':
         send('SIGN_OUT');
+        break;
+      case 'magicLinkSuccess':
+        console.log(
+          'NEW CUSTOM CASE IN listenToAuthHub: ',
+          `send('STORAGE_UPDATED')`
+        );
+        send('STORAGE_UPDATED');
+        break;
+      case 'magicLinkFailure':
+        console.log(
+          'NEW CUSTOM CASE IN listenToAuthHub: ',
+          `send('MAGIC_LINK_FAILED')`
+        );
+        send('MAGIC_LINK_FAILED');
         break;
     }
   });

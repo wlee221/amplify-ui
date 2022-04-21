@@ -14,6 +14,8 @@ export type AuthEventTypes =
   | 'CHANGE'
   | 'BLUR'
   | 'FEDERATED_SIGN_IN'
+  | 'STORAGE_UPDATED'
+  | 'MAGIC_LINK_FAILED'
   | 'RESEND'
   | 'RESET_PASSWORD'
   | 'SIGN_IN'

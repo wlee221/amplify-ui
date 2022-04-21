@@ -7,6 +7,7 @@ export enum AuthChallengeNames {
   NEW_PASSWORD_REQUIRED = 'NEW_PASSWORD_REQUIRED',
   RESET_REQUIRED = 'RESET_REQUIRED',
   MFA_SETUP = 'MFA_SETUP',
+  MAGIC_LINK = 'MAGIC_LINK',
 }
 
 /** Contact destinations that we can send user confirmation code to */

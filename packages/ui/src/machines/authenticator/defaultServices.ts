@@ -13,7 +13,15 @@ export const defaultServices = {
   },
 
   async getCurrentUser() {
-    return Auth.currentAuthenticatedUser();
+    const user = await Auth.fetchSession();
+    // TODO: fix this once Shugo has `Auth.currentAuthenticatedUser()`
+    if (user) {
+      console.log({ user });
+      return Auth.fetchSession();
+    } else {
+      // need this for sign out to work
+      return Promise.reject();
+    }
   },
 
   async handleSignUp(formData): Promise<any> {

@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Amplify } from '@aws-amplify/core';
 import { Auth, ShugoProvider, USER_PARAM_TYPE } from '@aws-amplify/auth';
+import { Hub } from 'aws-amplify';
+import router from 'next/router';
 
 import {
   Authenticator,
@@ -21,7 +23,7 @@ import awsExports from './aws-exports';
 
 Amplify.configure(awsExports);
 
-const API_HOST = '29k9fdk5lh.execute-api.us-west-2.amazonaws.com';
+const API_HOST = 'aizlxcgwce.execute-api.us-east-1.amazonaws.com';
 
 const shugoPlugin = new ShugoProvider();
 Amplify.addPluggable(shugoPlugin);
@@ -38,6 +40,38 @@ export default function App() {
     username: 'nicaroch@amazon.com',
   };
   const [signInMethod, setSignInMethod] = useState(radioOptions[0]);
+
+  const getSession = async () => {
+    const session = await Auth.fetchSession();
+    return session;
+  };
+
+  console.log('user from app: ', getSession());
+
+  useEffect(() => {
+    const session = getSession();
+
+    Hub.listen('auth', ({ payload }) => {
+      console.log('auth event', payload.event);
+      if (payload.event === 'signIn') {
+        const userFromSession = payload.data;
+        console.log({ userFromSession });
+
+        // setUserSession(userFromSession);
+      }
+    });
+
+    window.addEventListener('storage', (e) => {
+      const { key, newValue } = e;
+      console.log('change to local storage!', { key, newValue });
+      if (key === 'aws-amplify-cacheshugo-session') {
+        const session = JSON.parse(newValue);
+        console.log({ session });
+        // user is signed in, remove the spinner and display the app
+        // router.push('/ui/components/authenticator/shugo');
+      }
+    });
+  }, []);
 
   const handleRadioSelection = (e: any) => {
     const selection = e.target.value;
@@ -60,7 +94,6 @@ export default function App() {
 
   const services = {
     async handleSignIn(data) {
-      console.log(`sign in with ${signInMethod}`, { data });
       switch (signInMethod) {
         case 'Magic link':
           console.log('magic link...');
@@ -85,9 +118,9 @@ export default function App() {
           console.log('default... should do nothing.');
       }
     },
-    // async handleConfirmSignIn(data) {
-    //   console.log('custom confirm sign in!!!!');
-    // },
+    async handleConfirmSignIn(data) {
+      console.log('custom confirm sign in!!!!');
+    },
   };
 
   const formFields = {
@@ -127,9 +160,22 @@ export default function App() {
               size="small"
               variation="link"
             >
-              {`Feelin' lazy? Populate the input with a default value.`}
+              {`Populate default values`}
             </Button>
           </View>
+        );
+      },
+    },
+    ConfirmSignIn: {
+      Header() {
+        const { tokens } = useTheme();
+        return (
+          <Heading
+            padding={`${tokens.space.xl} 0 0 ${tokens.space.xl}`}
+            level={3}
+          >
+            A link has been sent to your device →
+          </Heading>
         );
       },
     },
@@ -149,69 +195,27 @@ export default function App() {
           </Radio>
         ))}
       </RadioGroupField>
-      {signInMethod === 'Magic link' && (
-        <Authenticator
-          loginMechanisms={['phone_number']}
-          services={services}
-          formFields={formFields}
-          socialProviders={[]}
-          hideSignUp={true}
-          components={components}
-        >
-          {({ signOut, user }) => {
-            // console.log({ user });
-            return (
-              <main>
-                <h1>Signed in!</h1>
-                <button onClick={signOut}>Sign out</button>
-              </main>
-            );
-          }}
-        </Authenticator>
-      )}
-      {signInMethod === 'Social' && (
-        <Authenticator
-          signUpAttributes={[]}
-          services={services}
-          formFields={formFields}
-          socialProviders={['facebook', 'google']}
-          hideSignUp={true}
-          components={components}
-        >
-          {({ signOut, user }) => {
-            // console.log({ user });
-            return (
-              <main>
-                <h1>Signed in!</h1>
-                <button onClick={signOut}>Sign out</button>
-              </main>
-            );
-          }}
-        </Authenticator>
-      )}
-      {signInMethod === 'Web AuthN' && (
-        <Authenticator
-          loginMechanisms={['email']}
-          services={services}
-          formFields={formFields}
-          socialProviders={[]}
-          hideSignUp={true}
-          components={components}
-        >
-          {({ signOut, user }) => {
-            // console.log({ user });
-            return (
-              <main>
-                <h1>Signed in!</h1>
-                <button onClick={signOut}>Sign out</button>
-                <button onClick={handleAddAuthenticator}>
-                  Add Authenticator Device
-                </button>
-              </main>
-            );
-          }}
-        </Authenticator>
-      )}
+      <Authenticator
+        loginMechanisms={['phone_number']}
+        services={services}
+        formFields={formFields}
+        socialProviders={['facebook', 'google']}
+        hideSignUp={true}
+        components={components}
+      >
+        {({ signOut, user }) => {
+          console.log({ user });
+          return (
+            <main>
+              <h1>Signed in!</h1>
+              <button onClick={signOut}>Sign out</button>
+              <button onClick={handleAddAuthenticator}>
+                Add Authenticator Device
+              </button>
+            </main>
+          );
+        }}
+      </Authenticator>
     </Flex>
   );
 }

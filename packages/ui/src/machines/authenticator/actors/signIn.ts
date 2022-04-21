@@ -83,12 +83,13 @@ export function signInActor({ services }: SignInMachineOptions) {
                   },
                   {
                     cond: 'shouldForceChangePassword',
-                    actions: [
-                      'setUser',
-                      'setChallengeName',
-                      'setRequiredAttributes',
-                    ],
+                    actions: ['setUser', 'setChallengeName'],
                     target: '#signInActor.forceNewPassword',
+                  },
+                  {
+                    cond: 'shouldWaitForMagicLink',
+                    actions: ['setUser', 'setChallengeName'],
+                    target: '#signInActor.waitForMagicLink',
                   },
                   {
                     actions: 'setUser',
@@ -134,6 +135,24 @@ export function signInActor({ services }: SignInMachineOptions) {
                 onError: {
                   actions: 'setRemoteError',
                   target: 'edit',
+                },
+              },
+            },
+            resolved: { always: '#signInActor.resolved' },
+            rejected: { always: '#signInActor.rejected' },
+          },
+        },
+        waitForMagicLink: {
+          entry: 'waitForHubEvent', // TODO: send this event via Auth Hub
+          states: {
+            pending: {
+              tags: ['pending'],
+              on: {
+                STORAGE_UPDATED: {
+                  target: 'resolved',
+                },
+                MAGIC_LINK_FAILED: {
+                  target: 'rejected',
                 },
               },
             },
@@ -406,10 +425,11 @@ export function signInActor({ services }: SignInMachineOptions) {
       },
       guards: {
         shouldConfirmSignIn: (_, event): boolean => {
-          const challengeName = get(event, 'data.challengeName');
+          const challengeName = AuthChallengeNames.MAGIC_LINK;
           const validChallengeNames = [
             AuthChallengeNames.SMS_MFA,
             AuthChallengeNames.SOFTWARE_TOKEN_MFA,
+            AuthChallengeNames.MAGIC_LINK,
           ];
 
           return validChallengeNames.includes(challengeName);
@@ -431,9 +451,16 @@ export function signInActor({ services }: SignInMachineOptions) {
           return challengeName === AuthChallengeNames.NEW_PASSWORD_REQUIRED;
         },
         shouldRequestVerification: (_, event): boolean => {
-          const { unverified, verified } = event.data;
+          // console.log({ _, event });
+          // const { unverified, verified } = event.data;
+          // return isEmpty(verified) && !isEmpty(unverified);
+          return false;
+        },
+        shouldWaitForMagicLink: (_, event): boolean => {
+          // const challengeName = get(event, 'data.challengeName');
+          const challengeName = 'MAGIC_LINK'; // TODO: get this from Shugo
 
-          return isEmpty(verified) && !isEmpty(unverified);
+          return challengeName === AuthChallengeNames.MAGIC_LINK;
         },
       },
       services: {

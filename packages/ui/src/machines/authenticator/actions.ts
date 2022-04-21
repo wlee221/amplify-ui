@@ -56,7 +56,8 @@ export const clearValidationError = assign({ validationError: (_) => ({}) });
  * "set" actions
  */
 export const setChallengeName = assign({
-  challengeName: (_, event: AuthEvent) => event.data?.challengeName,
+  // challengeName: (_, event: AuthEvent) => event.data?.challengeName,
+  challengeName: (_, event: AuthEvent) => 'MAGIC_LINK', // TODO: get this from Shugo
 });
 
 export const setRequiredAttributes = assign({

@@ -91,6 +91,8 @@ export const getServiceContextFacade = (state: AuthMachineState) => {
         return 'verifyUser';
       case actorState?.matches('confirmVerifyUser'):
         return 'confirmVerifyUser';
+      case actorState?.matches('waitForMagicLink'):
+        return 'waitForMagicLink';
       default:
         console.debug(
           'Cannot infer `route` from Authenticator state:',

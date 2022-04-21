@@ -11,6 +11,7 @@ import { SignInSignUpTabs } from '../shared';
 import { ConfirmVerifyUser, VerifyUser } from '../VerifyUser';
 import { ConfirmSignIn } from '../ConfirmSignIn/ConfirmSignIn';
 import { ConfirmResetPassword, ResetPassword } from '../ResetPassword';
+import { MagicLink } from '../MagicLink';
 
 type AuthenticatorChildren =
   | React.ReactNode
@@ -102,6 +103,8 @@ export function Router({
                   return <VerifyUser />;
                 case 'confirmVerifyUser':
                   return <ConfirmVerifyUser />;
+                case 'waitForMagicLink':
+                  return <MagicLink />;
 
                 default:
                   console.warn(
