@@ -143,20 +143,23 @@ export function signInActor({ services }: SignInMachineOptions) {
           },
         },
         waitForMagicLink: {
-          entry: 'waitForHubEvent', // TODO: send this event via Auth Hub
+          initial: 'pending',
+          entry: 'sendUpdate', // TODO: send this event via Auth Hub
           states: {
             pending: {
               tags: ['pending'],
               on: {
                 STORAGE_UPDATED: {
+                  actions: 'setUser',
                   target: 'resolved',
                 },
                 MAGIC_LINK_FAILED: {
+                  actions: 'setRemoteError',
                   target: 'rejected',
                 },
               },
             },
-            resolved: { always: '#signInActor.resolved' },
+            resolved: { type: 'final', always: '#signInActor.resolved' },
             rejected: { always: '#signInActor.rejected' },
           },
         },
@@ -429,7 +432,7 @@ export function signInActor({ services }: SignInMachineOptions) {
           const validChallengeNames = [
             AuthChallengeNames.SMS_MFA,
             AuthChallengeNames.SOFTWARE_TOKEN_MFA,
-            AuthChallengeNames.MAGIC_LINK,
+            // AuthChallengeNames.MAGIC_LINK,
           ];
 
           return validChallengeNames.includes(challengeName);
@@ -451,7 +454,7 @@ export function signInActor({ services }: SignInMachineOptions) {
           return challengeName === AuthChallengeNames.NEW_PASSWORD_REQUIRED;
         },
         shouldRequestVerification: (_, event): boolean => {
-          // console.log({ _, event });
+          // TODO: fix this part
           // const { unverified, verified } = event.data;
           // return isEmpty(verified) && !isEmpty(unverified);
           return false;

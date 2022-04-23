@@ -1,4 +1,5 @@
-import { Amplify, Auth } from 'aws-amplify';
+import { Amplify } from 'aws-amplify';
+import { Auth } from '@aws-amplify/auth';
 
 import {
   AuthChallengeNames,
@@ -17,7 +18,7 @@ export const defaultServices = {
     // TODO: fix this once Shugo has `Auth.currentAuthenticatedUser()`
     if (user) {
       console.log({ user });
-      return Auth.fetchSession();
+      return user;
     } else {
       // need this for sign out to work
       return Promise.reject();

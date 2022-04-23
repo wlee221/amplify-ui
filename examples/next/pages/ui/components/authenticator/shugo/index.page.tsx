@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Amplify } from '@aws-amplify/core';
 import { Auth, ShugoProvider, USER_PARAM_TYPE } from '@aws-amplify/auth';
 import { Hub } from 'aws-amplify';
-import router from 'next/router';
 
 import {
   Authenticator,
@@ -41,34 +40,27 @@ export default function App() {
   };
   const [signInMethod, setSignInMethod] = useState(radioOptions[0]);
 
-  const getSession = async () => {
-    const session = await Auth.fetchSession();
-    return session;
-  };
-
-  console.log('user from app: ', getSession());
-
   useEffect(() => {
-    const session = getSession();
-
-    Hub.listen('auth', ({ payload }) => {
-      console.log('auth event', payload.event);
-      if (payload.event === 'signIn') {
-        const userFromSession = payload.data;
-        console.log({ userFromSession });
-
-        // setUserSession(userFromSession);
-      }
-    });
+    // TODO: make sure this event is triggered from Shugo Plugin
+    const dispatchAuthEvent = function (event, data, message) {
+      Hub.dispatch(
+        'auth',
+        { event: event, data: data, message: message },
+        'Auth'
+      );
+    };
 
     window.addEventListener('storage', (e) => {
-      const { key, newValue } = e;
-      console.log('change to local storage!', { key, newValue });
+      const { key, newValue, oldValue } = e;
       if (key === 'aws-amplify-cacheshugo-session') {
         const session = JSON.parse(newValue);
-        console.log({ session });
-        // user is signed in, remove the spinner and display the app
-        // router.push('/ui/components/authenticator/shugo');
+        if (session && newValue && newValue !== oldValue) {
+          dispatchAuthEvent(
+            'signIn',
+            session?.data,
+            'A user ' + session.data?.user?.userid + ' has been signed in'
+          );
+        }
       }
     });
   }, []);
@@ -163,19 +155,6 @@ export default function App() {
               {`Populate default values`}
             </Button>
           </View>
-        );
-      },
-    },
-    ConfirmSignIn: {
-      Header() {
-        const { tokens } = useTheme();
-        return (
-          <Heading
-            padding={`${tokens.space.xl} 0 0 ${tokens.space.xl}`}
-            level={3}
-          >
-            A link has been sent to your device →
-          </Heading>
         );
       },
     },

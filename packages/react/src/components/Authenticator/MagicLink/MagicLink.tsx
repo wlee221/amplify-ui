@@ -60,7 +60,9 @@ export const MagicLink = (): JSX.Element => {
 MagicLink.Header = () => {
   return (
     <>
-      <Heading level={3}>{translate('its magiccccccc.... →')}</Heading>
+      <Heading level={3}>
+        {translate('A link has been sent to your device →')}
+      </Heading>
     </>
   );
 };

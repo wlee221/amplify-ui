@@ -50,17 +50,9 @@ export const listenToAuthHub = (send: AuthMachineSend) => {
         send('SIGN_OUT');
         break;
       case 'magicLinkSuccess':
-        console.log(
-          'NEW CUSTOM CASE IN listenToAuthHub: ',
-          `send('STORAGE_UPDATED')`
-        );
-        send('STORAGE_UPDATED');
+        send({ type: 'STORAGE_UPDATED', data: data.payload.data });
         break;
       case 'magicLinkFailure':
-        console.log(
-          'NEW CUSTOM CASE IN listenToAuthHub: ',
-          `send('MAGIC_LINK_FAILED')`
-        );
         send('MAGIC_LINK_FAILED');
         break;
     }
