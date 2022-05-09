@@ -237,6 +237,11 @@ export const META_INFO: MetaInfo = {
     description:
       'A Default Theme is a structured collection of the default design decisions that change the appearance of a UI library. An Amplify UI theme is a structured object of design tokens, breakpoints, and overrides. - Amplify UI',
   },
+  '/theming/amplify-provider': {
+    title: 'Theming - Amplify Provider',
+    description:
+      'Amplify Providers enables theming capabilities, color modes, and more within your application.',
+  },
   '/theming/responsive': {
     title: 'Theming - Responsive',
     description:

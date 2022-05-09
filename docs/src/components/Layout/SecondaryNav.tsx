@@ -88,6 +88,13 @@ export const SecondaryNav = (props) => {
         </NavLink>
         <NavLink
           {...props}
+          platforms={['react']}
+          href="/theming/amplify-provider"
+        >
+          Amplify Provider
+        </NavLink>
+        <NavLink
+          {...props}
           platforms={['react', 'vue', 'angular']}
           href="/theming/responsive"
         >
