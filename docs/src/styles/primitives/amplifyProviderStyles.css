@@ -1,0 +1,7 @@
+.styled-custom-button {
+  border-width: var(--amplify-components-button-primary-border-width);
+  background-color: var(--amplify-components-button-primary-background-color);
+  border-color: var(--amplify-colors-border-primary);
+  color: var(--amplify-colors-brand-secondary-100);
+  border-radius: var(--amplify-components-button-border-radius);
+}

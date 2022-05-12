@@ -1,4 +1,4 @@
-import { UsageExample } from './examples';
+import { UsageExample, ThemeExample, DesignTokens } from './examples';
 import { Example, ExampleCode } from '@/components/Example';
 
 `AmplifyProvider` is used to wrap content to provide theming context and color mode options
@@ -17,3 +17,76 @@ Import the `AmplifyProvider` component and wrap your top level element. Simply w
 
   </ExampleCode>
 </Example>
+
+## Theming
+
+`AmplifyProvider` unlocks theming capabilities throughout your application with the use of the `theme` prop on `AmplifyProvider` and also the `useTheme` hook which gives you access to the theme object
+
+<Example>
+  <ThemeExample />
+  <ExampleCode>
+
+```jsx file=./examples/ThemeExample.tsx
+
+```
+
+</ExampleCode>
+<ExampleCode>
+
+```css
+.styled-custom-button {
+  border-width: var(--amplify-components-button-primary-border-width);
+  background-color: var(--amplify-components-button-primary-background-color);
+  border-color: var(--amplify-colors-border-primary);
+  color: var(--amplify-colors-brand-secondary-100);
+  border-radius: var(--amplify-components-button-border-radius);
+}
+```
+
+  </ExampleCode>
+
+</Example>
+
+### Amplify UI Design Tokens
+
+Amplify UI Design tokens are the base of Amplifies Theming system. Through the design token system you can update and modify large portions of the application by updating general design tokens or you can target specific tokens that are applied to a single component.
+
+<DesignTokens />
+
+## Color Mode
+
+`AmplifyProvider` will accept a `colorMode` prop which can be used to activate styles reserved for specific color modes. The available color modes are `system`, `light`, and `dark` and the overrides for these color modes are declared as follows:
+
+```jsx
+const theme = {
+  name: 'dark-mode-theme',
+  overrides: [
+    {
+      colorMode: 'dark',
+      tokens: {
+        colors: {
+          black: { value: '#fff' },
+          white: { value: '#000' },
+          overlay: {
+            10: { value: 'hsla(0, 0%, 100%, 0.1)' },
+            20: { value: 'hsla(0, 0%, 100%, 0.2)' },
+            30: { value: 'hsla(0, 0%, 100%, 0.3)' },
+            40: { value: 'hsla(0, 0%, 100%, 0.4)' },
+            50: { value: 'hsla(0, 0%, 100%, 0.5)' },
+            60: { value: 'hsla(0, 0%, 100%, 0.6)' },
+            70: { value: 'hsla(0, 0%, 100%, 0.7)' },
+            80: { value: 'hsla(0, 0%, 100%, 0.8)' },
+            90: { value: 'hsla(0, 0%, 100%, 0.9)' },
+          },
+        },
+      },
+    },
+  ],
+};
+```
+
+For further details on using color modes see [Dark Mode](/theming/dark-mode)
+
+## Nonce
+
+`AmplifyProvider` accepts a `nonce` prop which is used to allow-list the generated inline style tags created by `AmplifyProvider`. The `nonce` prop should be filled on the server with the uniquely generated nonce value when the initial HTTP request is made for the page. For additional details on nonce values see the [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/nonce)
