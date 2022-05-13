@@ -14,15 +14,21 @@ if (typeof window !== 'undefined') {
 const SignalIdleMap = () => {
   const { default: map } = useMap();
 
+  map?.once('load', () => {
+    if (window['Cypress']) {
+      window['map'] = map;
+    }
+  });
+
   map?.on('idle', () => {
-    if (window['Cypress'] && !window['mapIdle']) {
-      window['mapIdle'] = true;
+    if (window['Cypress']) {
+      window['idleMap'] = true;
     }
   });
 
   map?.on('render', () => {
-    if (window['Cypress'] && window['mapIdle']) {
-      window['mapIdle'] = false;
+    if (window['Cypress']) {
+      window['idleMap'] = false;
     }
   });
 
