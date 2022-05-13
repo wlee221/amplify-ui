@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import * as React from 'react';
+import kebabCase from 'lodash/kebabCase';
 
 import { classNameModifier, classNameModifierByFlag } from '../shared/utils';
 import { ButtonProps, Primitive } from '../types';
@@ -7,6 +8,29 @@ import { ComponentClassNames } from '../shared/constants';
 import { Flex } from '../Flex';
 import { Loader } from '../Loader';
 import { View } from '../View';
+
+const CSS_VARIABLE_PREFIX = 'amplify';
+
+function cssNameTransform({ path = [] }): string {
+  return `--${kebabCase(
+    [CSS_VARIABLE_PREFIX, 'components', 'button', ...path].join(' ')
+  )}`;
+}
+
+function flattenTheme(obj = {}, arr = {}, path = []) {
+  if (obj.hasOwnProperty('value')) {
+    const key = cssNameTransform({ path });
+    arr[key] = obj.value;
+  } else if (typeof obj === 'object') {
+    for (const name in obj) {
+      if (obj.hasOwnProperty(name)) {
+        flattenTheme(obj[name], arr, [...path, name]);
+      }
+    }
+  }
+
+  return arr;
+}
 
 const ButtonPrimitive: Primitive<ButtonProps, 'button'> = (
   {
@@ -18,7 +42,9 @@ const ButtonPrimitive: Primitive<ButtonProps, 'button'> = (
     loadingText = '',
     size,
     type = 'button',
+    theme,
     variation,
+    style,
     ...rest
   },
   ref
@@ -41,6 +67,7 @@ const ButtonPrimitive: Primitive<ButtonProps, 'button'> = (
     ),
     className
   );
+  const t = flattenTheme(theme);
 
   return (
     <View
@@ -53,6 +80,10 @@ const ButtonPrimitive: Primitive<ButtonProps, 'button'> = (
       data-variation={variation}
       isDisabled={isDisabled || isLoading}
       type={type}
+      style={{
+        ...style,
+        ...t,
+      }}
       {...rest}
     >
       {isLoading && loadingText ? (

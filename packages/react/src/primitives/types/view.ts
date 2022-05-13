@@ -68,4 +68,6 @@ export interface ViewProps
   isDisabled?: boolean;
 
   style?: React.CSSProperties;
+
+  theme?: any;
 }

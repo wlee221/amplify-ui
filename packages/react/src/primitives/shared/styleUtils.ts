@@ -44,7 +44,36 @@ export const useTransformStyleProps = (props: ViewProps): ViewProps => {
   };
 };
 
-export const useStyles = (props: ViewProps, style: React.CSSProperties) => {
+function flattenTheme(obj, arr = [], path = []) {
+  if (obj.hasOwnProperty('value')) {
+    arr.push({ path, value: obj.value });
+  } else {
+    for (const name in obj) {
+      if (obj.hasOwnProperty(name)) {
+        flattenTheme(obj[name], arr, [...path, name]);
+      }
+    }
+  }
+
+  return arr;
+}
+
+const themeToVars = (theme: any): Record<string, string> => {
+  // flatten object (but we need to get the path)
+  // convert to flat object
+
+  return flattenTheme(theme).reduce((acc, val) => {
+    return {
+      ...acc,
+    };
+  }, {});
+};
+
+export const useStyles = (
+  props: ViewProps,
+  style: React.CSSProperties,
+  theme: any
+) => {
   const {
     breakpoints: { values: breakpoints, defaultBreakpoint },
   } = useTheme();

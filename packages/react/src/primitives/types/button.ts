@@ -1,6 +1,7 @@
 import { Sizes } from './base';
 import { ViewProps } from './view';
 import { FlexContainerStyleProps } from './flex';
+import { Theme } from '@aws-amplify/ui';
 
 export type ButtonSizes = Sizes;
 export type ButtonTypes = 'button' | 'reset' | 'submit';
@@ -49,4 +50,6 @@ export interface ButtonProps extends ViewProps, FlexContainerStyleProps {
    * Changes the visual weight of the button.
    */
   variation?: ButtonVariations;
+
+  theme?: Theme['tokens']['components']['button'];
 }
