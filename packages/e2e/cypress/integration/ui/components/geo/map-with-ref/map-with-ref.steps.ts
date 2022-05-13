@@ -5,7 +5,7 @@ When('I click the fly to button', () => {
 });
 
 Then('I see the map transition to San Francisco', () => {
-  cy.waitForMapIdle();
+  cy.waitForIdleMap();
   cy.window().then((windowObj) => {
     const { lat, lng } = windowObj['map'].getCenter();
     cy.wrap(+lat.toFixed(2)).should('eq', 37.77);
