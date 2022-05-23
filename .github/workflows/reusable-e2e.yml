@@ -31,6 +31,10 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     steps:
+      - name: Echo commit
+        run: echo ${{ inputs.commit }}
+      - name: Echo repository
+        run: echo ${{ inputs.repository }}
       - name: Checkout Amplify UI
         uses: actions/checkout@v3
         with:
