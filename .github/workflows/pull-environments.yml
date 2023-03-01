@@ -11,7 +11,7 @@ permissions:
 jobs:
   pull:
     runs-on: ubuntu-latest
-    environment: CI
+    environment: ci
     steps:
       - name: Checkout
         uses: actions/checkout@v3
