@@ -9,6 +9,10 @@ region=$2
 # In development, AWS_PROFILE should be set. In CI, it's not.
 [ "$AWS_PROFILE" ] && useProfile="true" || useProfile="false"
 
+export AWS_REGION=''
+export AWS_DEFAULT_REGION=''
+export AWS_SESSION_TOKEN=''
+
 FRONTENDCONFIG="{\
 \"SourceDir\":\"src\",\
 \"DistributionDir\":\"dist\",\
