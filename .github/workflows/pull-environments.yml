@@ -11,5 +11,12 @@ permissions:
 jobs:
   pull:
     runs-on: ubuntu-latest
+    environment: CI
     steps:
-      - run: echo "HI"
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: us-east-1
+          role-to-assume: ${{ secrets.E2E_TEST_ROLE_ARN }}
