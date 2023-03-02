@@ -40,6 +40,7 @@ jobs:
       - run: ls ~/.aws
       - run: cat ~/.aws/config
       - run: cat ~/.aws/credentials
+      - run: ls environments/auth/auth-with-email/src
       - name: Get caller identity
         run: aws sts get-caller-identity
       - name: Add Amplify CLI
