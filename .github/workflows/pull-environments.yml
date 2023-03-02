@@ -35,6 +35,7 @@ jobs:
           aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY && \
           aws configure set aws_session_token $AWS_SESSION_TOKEN && \
           aws configure set default.region $AWS_REGION
+      - run: aws amplify get-app --app-id d30xiecpldzxtd
       - name: Get caller identity
         run: aws sts get-caller-identity
       - name: Add Amplify CLI
