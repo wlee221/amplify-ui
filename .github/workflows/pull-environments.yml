@@ -37,6 +37,9 @@ jobs:
           aws configure set default.region $AWS_REGION
       - run: aws configure list
       - run: aws amplify get-app --app-id d30xiecpldzxtd
+      - run: ls ~/.aws
+      - run: cat ~/.aws/config
+      - run: cat ~/.aws/credentials
       - name: Get caller identity
         run: aws sts get-caller-identity
       - name: Add Amplify CLI
