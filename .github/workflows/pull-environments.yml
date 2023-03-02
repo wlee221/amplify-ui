@@ -30,7 +30,7 @@ jobs:
           aws-region: us-east-1
           role-to-assume: ${{ secrets.E2E_TEST_ROLE_ARN }}
       - name: Create temp AWS credentials file
-        working-directory: environments/auth
+        working-directory: environments
         run: |
           aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID && \
           aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY && \
