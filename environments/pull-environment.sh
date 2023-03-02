@@ -20,4 +20,4 @@ PROVIDERS="{\
 
 cd $dir
 
-echo y | yarn pull --providers $PROVIDERS
+yarn pull --providers $PROVIDERS -y
