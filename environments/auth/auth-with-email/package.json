@@ -3,6 +3,6 @@
   "name": "auth-with-email-environment",
   "version": "0.0.1",
   "scripts": {
-    "pull": "amplify pull --appId d30xiecpldzxtd --envName dev"
+    "pull": "amplify-dev pull --appId d30xiecpldzxtd --envName dev"
   }
 }

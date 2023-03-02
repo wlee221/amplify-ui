@@ -7,7 +7,7 @@ dir=$1
 region=$2
 
 # In development, AWS_PROFILE should be set. In CI, it's not.
-[ "$AWS_PROFILE" ] || AWS_PROFILE="default"
+useProfile="false"
 
 FRONTENDCONFIG="{\
 \"SourceDir\":\"src\",\
@@ -24,7 +24,7 @@ AMPLIFY="{\
 }"
 AWSCLOUDFORMATIONCONFIG="{\
 \"configLevel\":\"project\",\
-\"useProfile\":\"true\",\
+\"useProfile\":$useProfile,\
 \"profileName\":\"$AWS_PROFILE\",\
 \"accessKeyId\":\"$AWS_ACCESS_KEY_ID\",\
 \"secretAccessKey\":\"$AWS_SECRET_ACCESS_KEY\",\
