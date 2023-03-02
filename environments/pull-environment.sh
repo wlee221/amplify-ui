@@ -35,4 +35,4 @@ PROVIDERS="{\
 
 cd $dir
 
-echo y | yarn pull --amplify $AMPLIFY --frontend $FRONTEND --providers $PROVIDERS
+echo n | yarn pull --amplify $AMPLIFY --frontend $FRONTEND --providers $PROVIDERS
