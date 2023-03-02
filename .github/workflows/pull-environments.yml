@@ -40,10 +40,10 @@ jobs:
       - run: ls ~/.aws
       - run: cat ~/.aws/config
       - run: cat ~/.aws/credentials
-      - run: ls environments/auth/auth-with-email/src
       - name: Get caller identity
         run: aws sts get-caller-identity
       - name: Add Amplify CLI
         run: yarn global add @aws-amplify/cli
       - name: Pull down AWS environments
         run: yarn environments auth pull:email
+      - run: ls environments/auth/auth-with-email/src
