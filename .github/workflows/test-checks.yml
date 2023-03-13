@@ -26,6 +26,7 @@ jobs:
         with:
           name: 'POC check'
           head-sha: ${{ github.event.pull_request.head.sha }}
+          status: 'in_progress'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Sleep 20 seconds
@@ -36,5 +37,7 @@ jobs:
         with:
           name: 'POC check'
           head-sha: ${{ github.event.pull_request.head.sha }}
+          status: 'completed'
+          conclusion: 'success'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

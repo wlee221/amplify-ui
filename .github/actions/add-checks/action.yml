@@ -4,9 +4,15 @@ inputs:
   name:
     description: 'name of check'
     required: true
+  status:
+    description: 'status of check'
+    required: true
   head-sha:
     description: 'head-sha'
     required: true
+  conclusion:
+    description: 'add conclusion if status is completed'
+    required: false
 runs:
   using: 'composite'
   steps:
@@ -14,14 +20,16 @@ runs:
       env:
         name: ${{ inputs.name }}
         head_sha: ${{ inputs.head-sha }}
+        status: ${{ inputs.status }}
+        conclusion: ${{ inputs.conclusion }}
       with:
         script: |
-          const { name, head_sha } = process.env;
+          const { name, head_sha, status, conclusion } = process.env;
           github.rest.checks.create({
             name,
             owner: context.repo.owner,
             repo: context.repo.repo,
             head_sha,
-            status: 'completed',
-            conclusion: 'success'
+            status,
+            conclusion
           })
