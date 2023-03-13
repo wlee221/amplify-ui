@@ -1,17 +1,21 @@
-name: 'Add checks'
-description: 'Add status check to a PR.'
+name: 'Add Status Checks'
+description: 'Add status check on a specified head-sha'
 inputs:
   name:
-    description: 'name of check'
+    description: 'Name of status check'
     required: true
   status:
-    description: 'status of check'
+    description: >-
+      Status of check with possible values of 'queued', 'in_progress', 'completed'
     required: true
   head-sha:
-    description: 'head-sha'
+    description: 'The commit ID to add the checks to'
     required: true
   conclusion:
-    description: 'add conclusion if status is completed'
+    description: >-
+      Conclusion of status check with possible values of 'action_required',
+      'cancelled', 'failure', 'neutral', 'success', 'skipped', 'stale', 'timed_out'.
+      This is only required if status is 'completed'.
     required: false
 runs:
   using: 'composite'
@@ -25,10 +29,11 @@ runs:
       with:
         script: |
           const { name, head_sha, status, conclusion } = process.env;
+          const { owner, repo } = context.repo;
           github.rest.checks.create({
             name,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
+            owner,
+            repo,
             head_sha,
             status,
             conclusion: conclusion.length > 0 ? conclusion : undefined
