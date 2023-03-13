@@ -31,5 +31,5 @@ runs:
             repo: context.repo.repo,
             head_sha,
             status,
-            conclusion: conclusion ? conclusion : undefined
+            conclusion: conclusion.length > 0 ? conclusion : undefined
           });
