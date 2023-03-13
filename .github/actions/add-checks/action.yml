@@ -25,19 +25,11 @@ runs:
       with:
         script: |
           const { name, head_sha, status, conclusion } = process.env;
-          conclusion ?
-            github.rest.checks.create({
-              name,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              head_sha,
-              status,
-              conclusion
-            })
-          : github.rest.checks.create({
-              name,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              head_sha,
-              status
-            })
+          github.rest.checks.create({
+            name,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            head_sha,
+            status,
+            conclusion: conclusion ? conclusion : undefined
+          });
