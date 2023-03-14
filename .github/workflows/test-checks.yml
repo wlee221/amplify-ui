@@ -30,13 +30,16 @@ jobs:
           status: 'in_progress'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Sleep 20 seconds
-        run: sleep 20s
+      - name: log
+        run: echo "${{ steps.create-check.outputs.check-id }}"
+        shell: bash
+      - name: Sleep 10 seconds
+        run: sleep 10s
         shell: bash
       - name: Update check
         uses: ./.github/actions/update-checks
         with:
-          check-id: ${{ steps.create-check.outputs.result }}
+          check-id: ${{ steps.create-check.outputs.check-id }}
           status: 'completed'
           conclusion: 'success'
         env:

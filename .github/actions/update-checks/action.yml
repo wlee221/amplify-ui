@@ -26,6 +26,7 @@ runs:
         script: |
           const { status, conclusion, check_run_id } = process.env;
           const { owner, repo } = context.repo;
+          console.log('check_run_id in update checks: ', check_run_id);
           github.rest.checks.update({
             owner,
             repo,
