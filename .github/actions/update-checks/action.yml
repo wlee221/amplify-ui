@@ -5,7 +5,7 @@ inputs:
     description: >-
       Status of check with possible values of 'queued', 'in_progress', 'completed'
     required: true
-  check_run_id:
+  check_id:
     description: 'Check ID of status check to be updated'
     required: true
   conclusion:
@@ -20,7 +20,7 @@ runs:
     - uses: actions/github-script@v6
       env:
         status: ${{ inputs.status }}
-        check_run_id: ${{ inputs.check_run_id }}
+        check_run_id: ${{ inputs.check_id }}
         conclusion: ${{ inputs.conclusion }}
       with:
         script: |
