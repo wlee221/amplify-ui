@@ -1,15 +1,12 @@
-name: 'Add Status Checks'
-description: 'Add status check on a specified head-sha'
+name: 'Update Status Checks'
+description: 'Update status check on a specified check ID'
 inputs:
-  name:
-    description: 'Name of status check'
-    required: true
   status:
     description: >-
       Status of check with possible values of 'queued', 'in_progress', 'completed'
     required: true
-  head-sha:
-    description: 'The commit ID to add the checks to'
+  check_run_id:
+    description: 'Check ID of status check to be updated'
     required: true
   conclusion:
     description: >-
@@ -17,32 +14,22 @@ inputs:
       'cancelled', 'failure', 'neutral', 'success', 'skipped', 'stale', 'timed_out'.
       This is only required if status is 'completed'.
     required: false
-outputs:
-  check-id:
-    description: 'Check ID of status check'
-    value: ${{ steps.create-check.outputs.result }}
 runs:
   using: 'composite'
   steps:
-    - name: Create a status check
-      id: create-check
-      uses: actions/github-script@v6
+    - uses: actions/github-script@v6
       env:
-        name: ${{ inputs.name }}
-        head_sha: ${{ inputs.head-sha }}
         status: ${{ inputs.status }}
+        check_run_id: ${{ inputs.check_run_id }}
         conclusion: ${{ inputs.conclusion }}
       with:
-        result-encoding: string
         script: |
-          const { name, head_sha, status, conclusion } = process.env;
+          const { status, conclusion, check_run_id } = process.env;
           const { owner, repo } = context.repo;
-          const { data } = await github.rest.checks.create({
-            name,
+          github.rest.checks.update({
             owner,
             repo,
-            head_sha,
             status,
+            check_run_id,
             conclusion: conclusion.length > 0 ? conclusion : undefined
           });
-          return data.id;
