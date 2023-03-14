@@ -1,35 +1,42 @@
-name: 'Add checks'
-description: 'Add status check to a PR.'
+name: 'Add Status Checks'
+description: 'Add status check on a specified head-sha'
 inputs:
   name:
-    description: 'name of check'
+    description: 'Name of status check'
     required: true
-  repo:
-    description: 'repo name'
-    required: true
-  owner:
-    description: 'repo owner'
+  status:
+    description: >-
+      Status of check with possible values of 'queued', 'in_progress', 'completed'
     required: true
   head-sha:
-    description: 'head-sha'
+    description: 'The commit ID to add the checks to'
     required: true
+  conclusion:
+    description: >-
+      Conclusion of status check with possible values of 'action_required',
+      'cancelled', 'failure', 'neutral', 'success', 'skipped', 'stale', 'timed_out'.
+      This is only required if status is 'completed'.
+    required: false
 runs:
   using: 'composite'
   steps:
+    - run: echo ${{ fromJSON(github.event.repository) }}
+      shell: bash
     - uses: actions/github-script@v6
       env:
-        NAME: ${{ inputs.name }}
-        REPO: ${{ inputs.repo }}
-        OWNER: ${{ inputs.owner }}
-        HEAD_SHA: ${{ inputs.head-sha }}
+        name: ${{ inputs.name }}
+        head_sha: ${{ inputs.head-sha }}
+        status: ${{ inputs.status }}
+        conclusion: ${{ inputs.conclusion }}
       with:
         script: |
-          const { NAME, REPO, OWNER, HEAD_SHA } = process.env;
+          const { name, head_sha, status, conclusion } = process.env;
+          const { owner, repo } = context.repo;
           github.rest.checks.create({
-            name: NAME,
-            owner: OWNER,
-            repo: REPO,
-            'head-sha': HEAD_SHA,
-            status: 'completed',
-            conclusion: 'success'
-          })
+            name,
+            owner,
+            repo,
+            head_sha,
+            status,
+            conclusion: conclusion.length > 0 ? conclusion : undefined
+          });
