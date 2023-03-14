@@ -28,8 +28,6 @@ jobs:
           name: 'POC check'
           head-sha: ${{ github.event.pull_request.head.sha }}
           status: 'in_progress'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: log
         run: echo "${{ steps.create-check.outputs.check-id }}"
         shell: bash
@@ -42,5 +40,3 @@ jobs:
           check-id: ${{ steps.create-check.outputs.check-id }}
           status: 'completed'
           conclusion: 'success'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

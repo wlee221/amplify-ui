@@ -26,17 +26,18 @@ runs:
   steps:
     - name: Create a status check
       id: create-check
-      uses: actions/github-script@v6
+      uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975 # v6.4.0 https://github.com/actions/github-script/commit/98814c53be79b1d30f795b907e553d8679345975
       env:
         name: ${{ inputs.name }}
         head_sha: ${{ inputs.head-sha }}
         status: ${{ inputs.status }}
         conclusion: ${{ inputs.conclusion }}
+        owner: ${{ github.event.repository.owner.login }}
+        repo: ${{ github.event.repository.name }}
       with:
         result-encoding: string
         script: |
-          const { name, head_sha, status, conclusion } = process.env;
-          const { owner, repo } = context.repo;
+          const { name, head_sha, status, conclusion, owner, repo } = process.env;
           const { data } = await github.rest.checks.create({
             name,
             owner,
