@@ -20,20 +20,17 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - run: echo "${{ github.event.repository.name }}"
-      shell: bash
-    - run: echo "${{ github.event.repository.owner.login }}"
-      shell: bash
     - uses: actions/github-script@v6
       env:
-        name: ${{ inputs.name }}
-        head_sha: ${{ inputs.head-sha }}
-        status: ${{ inputs.status }}
         conclusion: ${{ inputs.conclusion }}
+        head_sha: ${{ inputs.head-sha }}
+        name: ${{ inputs.name }}
+        owner: ${{ github.event.repository.owner.login }}
+        repo: ${{ github.event.repository.name }}
+        status: ${{ inputs.status }}
       with:
         script: |
-          const { name, head_sha, status, conclusion } = process.env;
-          const { owner, repo } = context.repo;
+          const { name, head_sha, status, conclusion, owner, repo } = process.env;
           github.rest.checks.create({
             name,
             owner,
