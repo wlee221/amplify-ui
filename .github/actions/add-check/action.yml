@@ -1,4 +1,4 @@
-name: 'Add Status Checks'
+name: 'Add Status Check'
 description: 'Add status check on a specified head-sha'
 inputs:
   name:

@@ -23,7 +23,7 @@ jobs:
           SEGMENT_DOWNLOAD_TIMEOUT_MINS: 2
       - name: Add checks on PR
         id: create-check
-        uses: ./.github/actions/add-checks
+        uses: ./.github/actions/add-check
         with:
           name: 'POC check'
           head-sha: ${{ github.event.pull_request.head.sha }}
@@ -35,7 +35,7 @@ jobs:
         run: sleep 10s
         shell: bash
       - name: Update check
-        uses: ./.github/actions/update-checks
+        uses: ./.github/actions/update-check
         with:
           check-id: ${{ steps.create-check.outputs.check-id }}
           status: 'completed'
