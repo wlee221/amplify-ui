@@ -20,7 +20,9 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - run: echo ${{ fromJSON(github.event.repository) }}
+    - run: echo "${{ github.event.repository.name }}"
+      shell: bash
+    - run: echo "${{ github.event.repository.owner.login }}"
       shell: bash
     - uses: actions/github-script@v6
       env:
