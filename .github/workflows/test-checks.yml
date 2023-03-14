@@ -4,7 +4,8 @@ name: POC / Test checks
 
 on: pull_request
 
-permissions: write-all
+permissions:
+  checks: write
 
 jobs:
   setup:
@@ -24,6 +25,19 @@ jobs:
         uses: ./.github/actions/add-checks
         with:
           name: 'POC check'
-          repo: 'amplify-ui'
-          owner: 'wlee221'
           head-sha: ${{ github.event.pull_request.head.sha }}
+          status: 'in_progress'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Sleep 20 seconds
+        run: sleep 20s
+        shell: bash
+      - name: Add checks on PR
+        uses: ./.github/actions/add-checks
+        with:
+          name: 'POC check'
+          head-sha: ${{ github.event.pull_request.head.sha }}
+          status: 'completed'
+          conclusion: 'success'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
