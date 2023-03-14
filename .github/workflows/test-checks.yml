@@ -22,7 +22,7 @@ jobs:
         env:
           SEGMENT_DOWNLOAD_TIMEOUT_MINS: 2
       - name: Echo event object
-        run: echo ${{ github.event.repository.name }}
+        run: echo "${{ fromJSON(github.event.repository) }}"
       - name: Add checks on PR
         uses: ./.github/actions/add-checks
         with:
