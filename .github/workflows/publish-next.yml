@@ -18,8 +18,22 @@ permissions:
   contents: read # This is required for actions/checkout
 
 jobs:
-  test:
+  setup-cache:
+    uses: aws-amplify/amplify-ui/.github/workflows/reusable-setup-cache.yml@main
+    with:
+      commit: ${{ github.sha }}
+      repository: ${{ github.repository }}
+
+  unit:
+    uses: aws-amplify/amplify-ui/.github/workflows/reusable-unit.yml@main
+    needs: setup-cache
+    with:
+      commit: ${{ github.sha }}
+      repository: ${{ github.repository }}
+
+  e2e:
     uses: aws-amplify/amplify-ui/.github/workflows/reusable-e2e.yml@main
+    needs: unit
     with:
       commit: ${{ github.sha }}
       repository: ${{ github.repository }}
@@ -136,13 +150,16 @@ jobs:
       #       packages/e2e/cypress/screenshots/**
       #     retention-days: 5
 
-  # publish:
-  #   needs: [test, guides]
-  #   uses: ./.github/workflows/reusable-tagged-publish.yml
-  #   with:
-  #     dist-tag: next
-  #   secrets:
-  #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+  publish:
+    needs: [e2e, guides]
+    # uses: ./.github/workflows/reusable-tagged-publish.yml
+    # with:
+    #   dist-tag: next
+    # secrets:
+    #   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: Echo "mock publish"
 
   build-test:
     needs: guides
