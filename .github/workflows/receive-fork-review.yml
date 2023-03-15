@@ -17,10 +17,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
-      - name: Build
-        run: /bin/bash ./build.sh
-
       - name: Save commit ID
         run: |
           mkdir -p ./commit
