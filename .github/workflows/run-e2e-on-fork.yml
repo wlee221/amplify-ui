@@ -1,0 +1,65 @@
+name: Run E2E on Fork
+
+on:
+  workflow_run:
+    workflows: [Receive Fork Review]
+    types:
+      - completed
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    # check if receive-fork-review workflow completed successfully
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: 'Download artifact'
+        uses: actions/github-script@v3.1.0
+        with:
+          script: |
+            var artifacts = await github.actions.listWorkflowRunArtifacts({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               run_id: ${{github.event.workflow_run.id }},
+            });
+            var matchArtifact = artifacts.data.artifacts.filter((artifact) => {
+              return artifact.name == "commit"
+            })[0];
+            var download = await github.actions.downloadArtifact({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               artifact_id: matchArtifact.id,
+               archive_format: 'zip',
+            });
+            var fs = require('fs');
+            fs.writeFileSync('${{github.workspace}}/commit.zip', Buffer.from(download.data));
+      - run: unzip commit.zip
+      - name: 'Read from artifact zip'
+        uses: actions/github-script@v3.1.0
+        id: read-artifact
+        with:
+          script: |
+            var fs = require('fs');
+            var commit_id = fs.readFileSync('./commit_id');
+            return commit_id;
+      - name: Checkout Amplify UI
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+      - name: Setup Node.js 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+        env:
+          SEGMENT_DOWNLOAD_TIMEOUT_MINS: 2
+      # create status
+      - name: Add checks on PR
+        id: create-check
+        uses: ./.github/actions/add-check
+        with:
+          name: 'POC check'
+          head-sha: ${{ steps.read-artifact.outputs.result }}
+          status: 'in_progress'
+
+  # setup-cache
+  # run e2e
+  # update status
