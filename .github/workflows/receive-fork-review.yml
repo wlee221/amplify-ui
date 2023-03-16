@@ -14,15 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "This PR is approved and e2e tests will begin running."
-  is_maintainer:
-    runs-on: ubuntu-latest
-    steps:
-      - name: 'Check user permissions'
-        uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
-        with:
-          script: |
-            console.log(${{ github.event.workflow_run.actor.login }});
   build:
+    needs: approved
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
