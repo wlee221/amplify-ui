@@ -29,7 +29,7 @@ jobs:
         run: |
           echo "${{ steps.get-permissions.outputs.result }}"
           exit 1
-  upload:
+  setup:
     needs: check-write-access
     runs-on: ubuntu-latest
     # check if receive-fork-review workflow completed successfully
@@ -65,16 +65,6 @@ jobs:
             var fs = require('fs');
             var commit_id = fs.readFileSync('./commit_id', 'utf-8');
             return commit_id.replace(/(\r\n|\n|\r)/gm, "");
-      - name: Checkout Amplify UI
-        uses: actions/checkout@v3
-        with:
-          persist-credentials: false
-      - name: Setup Node.js 16
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-        env:
-          SEGMENT_DOWNLOAD_TIMEOUT_MINS: 2
       # create status
       - name: Add status to PR
         uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
@@ -92,8 +82,8 @@ jobs:
                repo,
                sha,
                state: 'pending',
-               context: 'Run e2e tests',
-               description: 'e2e tests are now running',
+               context: 'Run E2E tests',
+               description: 'E2E tests are now running',
                target_url: `https://github.com/${owner}/${repo}/actions/runs/${run_id}`
             });
       - name: Sleep 10 seconds
@@ -115,11 +105,11 @@ jobs:
                repo,
                sha,
                state: 'success',
-               context: 'Run e2e tests',
-               description: 'e2e tests have finished running',
+               context: 'Run E2E tests',
+               description: 'E2E tests have finished running',
                target_url: `https://github.com/${owner}/${repo}/actions/runs/${run_id}`
             });
 
+  # checkout-repo
   # setup-cache
-  # run e2e
-  # update status
+  # run-E2E
