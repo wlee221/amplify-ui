@@ -14,6 +14,7 @@ jobs:
         id: get-permissions
         uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
         with:
+          result-encoding: string
           script: |
             var { data } = await github.rest.repos.getCollaboratorPermissionLevel({
               owner: context.repo.owner,
