@@ -37,9 +37,10 @@ jobs:
         uses: actions/github-script@v3.1.0
         id: read-artifact
         with:
+          result-encoding: string
           script: |
             var fs = require('fs');
-            var commit_id = fs.readFileSync('./commit_id');
+            var commit_id = fs.readFileSync('./commit_id', 'utf-8');
             return commit_id;
       - name: Checkout Amplify UI
         uses: actions/checkout@v3

@@ -7,6 +7,7 @@ on:
 jobs:
   approved:
     # only run the workflow on forks and when a PR is reviewed and approved
+    # only run the workflow if approver is a maintainer - https://github.com/actions-cool/check-user-permission/blob/main/src/main.js
     if: |
       (github.event.pull_request.head.repo.full_name != github.repository) &&
       (github.event.review.state == 'approved')
