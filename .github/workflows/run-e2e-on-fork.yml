@@ -58,7 +58,7 @@ jobs:
         uses: ./.github/actions/add-check
         with:
           name: 'POC check'
-          head-sha: ${{ steps.read-artifact.outputs.result }}
+          head-sha: '9741b780465e6f01af1b75c33fe4bd3bf5a93e6f'
           status: 'in_progress'
 
   # setup-cache
