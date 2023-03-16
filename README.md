@@ -2,7 +2,7 @@
 
 ---
 
-Hi!
+Hii!
 
 <p align="center">
   <img src="docs/public/svg/favicon.svg" style="width:12vw" alt="Amplify UI logo" />
