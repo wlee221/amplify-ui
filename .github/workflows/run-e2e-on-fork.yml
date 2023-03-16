@@ -7,19 +7,22 @@ on:
       - completed
 
 jobs:
-  check-if-maintainer:
+  check-write-access:
     runs-on: ubuntu-latest
     steps:
-      - name: 'Check user permissions'
+      - name: 'Read user permissions to check if it is either "write" or "admin"'
         uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
         with:
           script: |
-            var permissions = await github.rest.repos.getCollaboratorPermissionLevel({
+            var { data } = await github.rest.repos.getCollaboratorPermissionLevel({
               owner: context.repo.owner,
               repo: context.repo.repo,
               username: '${{ github.event.workflow_run.actor.login }}'
             })
-            console.log(permissions);
+            if (data.permission == 'write' || data.permission == 'admin') {
+              exit 0;
+            }
+            exit 1;
   upload:
     needs: check-if-maintainer
     runs-on: ubuntu-latest
