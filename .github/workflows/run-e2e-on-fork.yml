@@ -7,6 +7,7 @@ on:
       - completed
 
 jobs:
+  # check if approver has write/admin permissions
   check-write-access:
     runs-on: ubuntu-latest
     steps:

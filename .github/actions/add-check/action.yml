@@ -40,6 +40,7 @@ runs:
         result-encoding: string
         script: |
           const { name, head_sha, status, conclusion, owner, repo } = process.env;
+          console.log('params for create-check: ', name, head_sha, status, conclusion, owner, repo);
           const { data } = await github.rest.checks.create({
             name,
             owner,
@@ -48,4 +49,5 @@ runs:
             status,
             conclusion: conclusion.length > 0 ? conclusion : undefined
           });
+          console.log('data: ', data);
           return data.id;
