@@ -32,8 +32,8 @@ runs:
         head_sha: ${{ inputs.head-sha }}
         status: ${{ inputs.status }}
         conclusion: ${{ inputs.conclusion }}
-        owner: ${{ github.event.repository.owner.login }}
-        repo: ${{ github.event.repository.name }}
+        owner: 'wlee221'
+        repo: 'amplify-ui'
       with:
         result-encoding: string
         script: |
