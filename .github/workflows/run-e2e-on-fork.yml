@@ -18,13 +18,15 @@ jobs:
             var { data } = await github.rest.repos.getCollaboratorPermissionLevel({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              username: '${{ github.event.workflow_run.actor.login }}'
+              username: '${{ github.event.sender.actor.login }}'
             })
             console.log('data.permission:', data.permission);
             return data.permission;
       - name: 'Fail this workflow if user does not have write permissions'
         if: ${{ steps.get-permissions.outputs.result != 'write' && steps.get-permissions.outputs.result != 'admin' }}
-        run: exit 1
+        run: |
+          echo "${{ steps.get-permissions.outputs.result }}"
+          exit 1
   upload:
     needs: check-write-access
     runs-on: ubuntu-latest
