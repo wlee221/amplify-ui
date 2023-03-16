@@ -85,7 +85,7 @@ jobs:
           result-encoding: string
           script: |
             const { sha } = process.env;
-            const { data } = octokit.rest.repos.createCommitStatus({
+            const { data } = github.rest.repos.createCommitStatus({
                owner: context.repo.owner,
                repo: context.repo.repo,
                sha,
