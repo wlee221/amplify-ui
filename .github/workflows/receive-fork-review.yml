@@ -14,6 +14,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "This PR is approved and e2e tests will begin running."
+  is_maintainer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Check user permissions'
+        uses: actions/github-script@v3.1.0
+        with:
+          script: |
+            var permissions = await github.rest.repos.getCollaboratorPermissionLevel({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              username: github.event.workflow_run.actor.login
+            })
+            console.log(permissions);
   build:
     runs-on: ubuntu-latest
     steps:
