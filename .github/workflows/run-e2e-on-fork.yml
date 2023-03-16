@@ -89,41 +89,67 @@ jobs:
       - name: Sleep 10 seconds
         run: exit 1;
         shell: bash
-  # setup-cache:
-  #   needs: setup
-  #   uses: aws-amplify/amplify-ui/.github/workflows/reusable-setup-cache.yml@main
-  #   with:
-  #     commit: ${{ github.sha }}
-  #     repository: ${{ github.repository }}
+  setup-cache:
+    needs: setup
+    uses: wlee221/amplify-ui/.github/workflows/reusable-setup-cache.yml@main
+    with:
+      commit: ${{ github.sha }}
+      repository: ${{ github.repository }}
 
-  # e2e:
-  #   uses: aws-amplify/amplify-ui/.github/workflows/reusable-e2e.yml@main
-  #   needs: unit
-  #   with:
-  #     commit: ${{ github.event.pull_request.head.sha }}
-  #     repository: ${{ github.event.pull_request.head.repo.full_name }}
-  #   secrets:
-  #     AUTH_E2E_ROLE_ARN: ${{ secrets.AUTH_E2E_ROLE_ARN }}
-  #     DATASTORE_E2E_ROLE_ARN: ${{ secrets.DATASTORE_E2E_ROLE_ARN }}
-  #     GEO_E2E_ROLE_ARN: ${{ secrets.GEO_E2E_ROLE_ARN }}
-  #     STORAGE_E2E_ROLE_ARN: ${{ secrets.STORAGE_E2E_ROLE_ARN }}
-  #     IN_APP_MESSAGING_E2E_ROLE_ARN: ${{ secrets.IN_APP_MESSAGING_E2E_ROLE_ARN }}
-  #     DOMAIN: ${{ secrets.DOMAIN }}
-  #     PHONE_NUMBER: ${{ secrets.PHONE_NUMBER }}
-  #     USERNAME: ${{ secrets.USERNAME }}
-  #     NEW_PASSWORD: ${{ secrets.NEW_PASSWORD }}
-  #     VALID_PASSWORD: ${{ secrets.VALID_PASSWORD }}
-  #     SITE_URL: ${{ secrets.SITE_URL }}
-  #     DOCSEARCH_DOCS_APP_ID: ${{ secrets.DOCSEARCH_DOCS_APP_ID }}
-  #     DOCSEARCH_DOCS_API_KEY: ${{ secrets.DOCSEARCH_DOCS_API_KEY }}
-  #     DOCSEARCH_DOCS_INDEX_NAME: ${{ secrets.DOCSEARCH_DOCS_INDEX_NAME }}
+  e2e:
+    uses: wlee221/amplify-ui/.github/workflows/reusable-e2e.yml@main
+    needs: setup-cache
+    with:
+      commit: ${{ github.event.pull_request.head.sha }}
+      repository: ${{ github.event.pull_request.head.repo.full_name }}
+    secrets:
+      AUTH_E2E_ROLE_ARN: ${{ secrets.AUTH_E2E_ROLE_ARN }}
+      DATASTORE_E2E_ROLE_ARN: ${{ secrets.DATASTORE_E2E_ROLE_ARN }}
+      GEO_E2E_ROLE_ARN: ${{ secrets.GEO_E2E_ROLE_ARN }}
+      STORAGE_E2E_ROLE_ARN: ${{ secrets.STORAGE_E2E_ROLE_ARN }}
+      IN_APP_MESSAGING_E2E_ROLE_ARN: ${{ secrets.IN_APP_MESSAGING_E2E_ROLE_ARN }}
+      DOMAIN: ${{ secrets.DOMAIN }}
+      PHONE_NUMBER: ${{ secrets.PHONE_NUMBER }}
+      USERNAME: ${{ secrets.USERNAME }}
+      NEW_PASSWORD: ${{ secrets.NEW_PASSWORD }}
+      VALID_PASSWORD: ${{ secrets.VALID_PASSWORD }}
+      SITE_URL: ${{ secrets.SITE_URL }}
+      DOCSEARCH_DOCS_APP_ID: ${{ secrets.DOCSEARCH_DOCS_APP_ID }}
+      DOCSEARCH_DOCS_API_KEY: ${{ secrets.DOCSEARCH_DOCS_API_KEY }}
+      DOCSEARCH_DOCS_INDEX_NAME: ${{ secrets.DOCSEARCH_DOCS_INDEX_NAME }}
+
+  update-success-status:
+    if: ${{ success() }}
+    needs: e2e
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update status when E2E tests are successful
+        uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
+        env:
+          sha: ${{ steps.read-artifact.outputs.result }}
+          owner: ${{ github.event.repository.owner.login }}
+          repo: ${{ github.event.repository.name }}
+          run_id: ${{ github.run_id }}
+        with:
+          result-encoding: string
+          script: |
+            const { sha, owner, repo, run_id } = process.env;
+            github.rest.repos.createCommitStatus({
+               owner,
+               repo,
+               sha,
+               state: 'success',
+               context: 'Run E2E tests',
+               description: 'E2E tests have finished running',
+               target_url: `https://github.com/${owner}/${repo}/actions/runs/${run_id}`
+            });
 
   update-failure-status:
-    needs: setup
+    if: ${{ failure() }}
+    needs: e2e
     runs-on: ubuntu-latest
     steps:
       - name: Update status when E2E tests are not successful
-        if: ${{ failure() }}
         uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
         env:
           sha: ${{ steps.read-artifact.outputs.result }}
@@ -140,10 +166,6 @@ jobs:
                sha,
                state: 'failure',
                context: 'Run E2E tests',
-               description: 'E2E tests have finished running',
+               description: 'E2E tests have failed',
                target_url: `https://github.com/${owner}/${repo}/actions/runs/${run_id}`
             });
-
-  # checkout-repo
-  # setup-cache
-  # run-E2E
