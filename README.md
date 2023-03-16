@@ -113,3 +113,4 @@ As we continue to work on the new Amplify UI we will move UI-related issues in t
 ## Contributing
 
 - [CONTRIBUTING.md](/CONTRIBUTING.md)
+
