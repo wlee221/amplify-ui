@@ -86,7 +86,7 @@ jobs:
         with:
           result-encoding: string
           script: |
-            const { sha, owner, repo } = process.env;
+            const { sha, owner, repo, run_id } = process.env;
             github.rest.repos.createCommitStatus({
                owner,
                repo,
@@ -103,19 +103,23 @@ jobs:
         uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
         env:
           sha: ${{ steps.read-artifact.outputs.result }}
+          owner: ${{ github.event.repository.owner.login }}
+          repo: ${{ github.event.repository.name }}
+          run_id: ${{ github.run_id }}
         with:
           result-encoding: string
           script: |
-            const { sha } = process.env;
+            const { sha, owner, repo, run_id } = process.env;
             github.rest.repos.createCommitStatus({
-               owner: context.repo.owner,
-               repo: context.repo.repo,
+               owner,
+               repo,
                sha,
                state: 'success',
                context: 'Run e2e tests',
-               description: 'e2e tests are now running',
+               description: 'e2e tests have finished running',
                target_url: `https://github.com/${owner}/${repo}/actions/runs/4432251380/jobs/${run_id}`
             });
+
   # setup-cache
   # run e2e
   # update status
