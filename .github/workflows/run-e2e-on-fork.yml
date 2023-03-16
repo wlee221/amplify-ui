@@ -94,7 +94,7 @@ jobs:
                state: 'pending',
                context: 'Run e2e tests',
                description: 'e2e tests are now running',
-               target_url: `https://github.com/${owner}/${repo}/actions/runs/4432251380/jobs/${run_id}`
+               target_url: `https://github.com/${owner}/${repo}/actions/runs/${run_id}`
             });
       - name: Sleep 10 seconds
         run: sleep 10s
@@ -117,7 +117,7 @@ jobs:
                state: 'success',
                context: 'Run e2e tests',
                description: 'e2e tests have finished running',
-               target_url: `https://github.com/${owner}/${repo}/actions/runs/4432251380/jobs/${run_id}`
+               target_url: `https://github.com/${owner}/${repo}/actions/runs/${run_id}`
             });
 
   # setup-cache
