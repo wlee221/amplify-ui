@@ -76,7 +76,7 @@ jobs:
         env:
           SEGMENT_DOWNLOAD_TIMEOUT_MINS: 2
       # create status
-      - name: Add checks on PR
+      - name: Add status to PR
         id: create-check
         uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
         env:
@@ -85,14 +85,34 @@ jobs:
           result-encoding: string
           script: |
             const { sha } = process.env;
-            const { data } = github.rest.repos.createCommitStatus({
+            const data = github.rest.repos.createCommitStatus({
                owner: context.repo.owner,
                repo: context.repo.repo,
                sha,
                state: 'pending'
+               context: 'Run e2e tests'
             });
             console.log('data: ', data);
-
+      - name: Sleep 10 seconds
+        run: sleep 10s
+        shell: bash
+      - name: Update status of PR
+        id: create-check
+        uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
+        env:
+          sha: ${{ steps.read-artifact.outputs.result }}
+        with:
+          result-encoding: string
+          script: |
+            const { sha } = process.env;
+            const data = github.rest.repos.createCommitStatus({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               sha,
+               state: 'success'
+               context: 'Run e2e tests'
+            });
+            console.log('data: ', data);
   # setup-cache
   # run e2e
   # update status
