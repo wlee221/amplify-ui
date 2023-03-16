@@ -88,7 +88,7 @@ jobs:
                owner: context.repo.owner,
                repo: context.repo.repo,
                sha,
-               state: 'pending'
+               state: 'pending',
                context: 'Run e2e tests'
             });
             console.log('data: ', data);
@@ -107,7 +107,7 @@ jobs:
                owner: context.repo.owner,
                repo: context.repo.repo,
                sha,
-               state: 'success'
+               state: 'success',
                context: 'Run e2e tests'
             });
             console.log('data: ', data);
