@@ -21,12 +21,7 @@ jobs:
         uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
         with:
           script: |
-            var permissions = await github.rest.repos.getCollaboratorPermissionLevel({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              username: ${{ github.event.workflow_run.actor.login }}
-            })
-            console.log(permissions);
+            console.log(${{ github.event }});
   build:
     runs-on: ubuntu-latest
     steps:
