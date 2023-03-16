@@ -77,7 +77,6 @@ jobs:
           SEGMENT_DOWNLOAD_TIMEOUT_MINS: 2
       # create status
       - name: Add status to PR
-        id: create-check
         uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
         env:
           sha: ${{ steps.read-artifact.outputs.result }}
@@ -97,7 +96,6 @@ jobs:
         run: sleep 10s
         shell: bash
       - name: Update status of PR
-        id: create-check
         uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
         env:
           sha: ${{ steps.read-artifact.outputs.result }}
