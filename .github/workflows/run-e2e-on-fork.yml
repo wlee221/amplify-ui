@@ -86,9 +86,7 @@ jobs:
                description: 'E2E tests are now running',
                target_url: `https://github.com/${owner}/${repo}/actions/runs/${run_id}`
             });
-      - name: Sleep 10 seconds
-        run: exit 1;
-        shell: bash
+
   setup-cache:
     needs: setup
     uses: wlee221/amplify-ui/.github/workflows/reusable-setup-cache.yml@main
