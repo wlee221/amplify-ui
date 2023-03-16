@@ -18,7 +18,7 @@ jobs:
             var { data } = await github.rest.repos.getCollaboratorPermissionLevel({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              username: '${{ github.event.sender.actor.login }}'
+              username: '${{ github.event.sender.login }}'
             })
             console.log('data.permission:', data.permission);
             return data.permission;
