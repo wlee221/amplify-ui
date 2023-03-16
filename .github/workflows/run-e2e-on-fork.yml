@@ -78,11 +78,20 @@ jobs:
       # create status
       - name: Add checks on PR
         id: create-check
-        uses: ./.github/actions/add-check
+        uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
+        env:
+          sha: ${{ steps.read-artifact.outputs.result }}
         with:
-          name: 'POC check'
-          head-sha: ${{ steps.read-artifact.outputs.result }}
-          status: 'in_progress'
+          result-encoding: string
+          script: |
+            const { sha } = process.env;
+            const { data } = octokit.rest.repos.createCommitStatus({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               sha,
+               state: 'pending'
+            });
+            console.log('data: ', data);
 
   # setup-cache
   # run e2e
