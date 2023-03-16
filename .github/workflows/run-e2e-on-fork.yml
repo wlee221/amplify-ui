@@ -10,7 +10,8 @@ jobs:
   check-write-access:
     runs-on: ubuntu-latest
     steps:
-      - name: 'Read user permissions to check if it is either "write" or "admin"'
+      - name: 'Get user permissions to check if it is either "write" or "admin"'
+        id: get-permissions
         uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
         with:
           script: |
@@ -19,10 +20,10 @@ jobs:
               repo: context.repo.repo,
               username: '${{ github.event.workflow_run.actor.login }}'
             })
-            if (data.permission == 'write' || data.permission == 'admin') {
-              exit 0;
-            }
-            exit 1;
+            return data.permission;
+      - name: 'Fail this workflow if user does not have write permissions'
+        if: ${{ steps.get-permissions.outputs.result != 'write' && steps.get-permissions.outputs.result != 'admin' }}
+        run: exit 1
   upload:
     needs: check-write-access
     runs-on: ubuntu-latest
