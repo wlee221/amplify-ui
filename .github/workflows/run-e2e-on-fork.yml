@@ -117,6 +117,7 @@ jobs:
     needs: [setup, e2e]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0 https://github.com/actions/checkout/commit/ac593985615ec2ede58e132d2e21d2b1cbd6127c
       - name: Update status when E2E tests are successful
         uses: ./.github/actions/set-status
         with:
@@ -132,6 +133,7 @@ jobs:
     needs: [setup, e2e]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0 https://github.com/actions/checkout/commit/ac593985615ec2ede58e132d2e21d2b1cbd6127c
       - name: Update status when E2E tests are not successful
         uses: ./.github/actions/set-status
         with:
