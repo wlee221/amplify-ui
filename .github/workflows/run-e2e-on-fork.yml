@@ -72,28 +72,14 @@ jobs:
             var commit_id = fs.readFileSync('./commit_id', 'utf-8');
             return commit_id.replace(/(\r\n|\n|\r)/gm, "");
       # create status
-      - run: echo https://github.com/${{ github.event.repository.owner.login }}/${{ github.event.repository.name }}/actions/runs/${{ github.run_id }}
-
-      - name: Add status to PR
-        uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
-        env:
-          sha: ${{ steps.read-artifact.outputs.result }}
-          owner: ${{ github.event.repository.owner.login }}
-          repo: ${{ github.event.repository.name }}
-          run_id: ${{ github.run_id }}
+      - name: Set status to commit sha
+        uses: ./.github/actions/set-status
         with:
-          result-encoding: string
-          script: |
-            const { sha, owner, repo, run_id } = process.env;
-            github.rest.repos.createCommitStatus({
-               owner,
-               repo,
-               sha,
-               state: 'pending',
-               context: 'Run E2E tests',
-               description: 'E2E tests are now running',
-               target_url: `https://github.com/${owner}/${repo}/actions/runs/${run_id}`
-            });
+          sha: ${{ steps.read-artifact.outputs.result }}
+          state: 'pending'
+          context: 'Run E2E tests'
+          description: 'E2E tests are now running'
+          target-url: https://github.com/${{ github.event.repository.owner.login }}/${{ github.event.repository.name }}/actions/runs/${{ github.run_id }}
 
   setup-cache:
     needs: setup
@@ -124,54 +110,32 @@ jobs:
       DOCSEARCH_DOCS_API_KEY: ${{ secrets.DOCSEARCH_DOCS_API_KEY }}
       DOCSEARCH_DOCS_INDEX_NAME: ${{ secrets.DOCSEARCH_DOCS_INDEX_NAME }}
 
+  # update status on success
   update-success-status:
     if: ${{ success() }}
     needs: [setup, e2e]
     runs-on: ubuntu-latest
     steps:
       - name: Update status when E2E tests are successful
-        uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
-        env:
-          sha: ${{ needs.setup.outputs.commit_id }}
-          owner: ${{ github.event.repository.owner.login }}
-          repo: ${{ github.event.repository.name }}
-          run_id: ${{ github.run_id }}
+        uses: ./.github/actions/set-status
         with:
-          result-encoding: string
-          script: |
-            const { sha, owner, repo, run_id } = process.env;
-            github.rest.repos.createCommitStatus({
-               owner,
-               repo,
-               sha,
-               state: 'success',
-               context: 'Run E2E tests',
-               description: 'E2E tests have finished running',
-               target_url: `https://github.com/${owner}/${repo}/actions/runs/${run_id}`
-            });
+          sha: ${{ steps.read-artifact.outputs.result }}
+          state: 'success'
+          context: 'Run E2E tests'
+          description: 'E2E tests have finished running'
+          target-url: https://github.com/${{ github.event.repository.owner.login }}/${{ github.event.repository.name }}/actions/runs/${{ github.run_id }}
 
+  # update status on failure
   update-failure-status:
     if: ${{ failure() }}
     needs: [setup, e2e]
     runs-on: ubuntu-latest
     steps:
       - name: Update status when E2E tests are not successful
-        uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
-        env:
-          sha: ${{ needs.setup.outputs.commit_id }}
-          owner: ${{ github.event.repository.owner.login }}
-          repo: ${{ github.event.repository.name }}
-          run_id: ${{ github.run_id }}
+        uses: ./.github/actions/set-status
         with:
-          result-encoding: string
-          script: |
-            const { sha, owner, repo, run_id } = process.env;
-            github.rest.repos.createCommitStatus({
-               owner,
-               repo,
-               sha,
-               state: 'failure',
-               context: 'Run E2E tests',
-               description: 'E2E tests have failed',
-               target_url: `https://github.com/${owner}/${repo}/actions/runs/${run_id}`
-            });
+          sha: ${{ steps.read-artifact.outputs.result }}
+          state: 'failure'
+          context: 'Run E2E tests'
+          description: 'E2E tests have failed'
+          target-url: https://github.com/${{ github.event.repository.owner.login }}/${{ github.event.repository.name }}/actions/runs/${{ github.run_id }}
