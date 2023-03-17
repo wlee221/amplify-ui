@@ -1,5 +1,7 @@
 name: Run E2E on Fork
 
+concurrency: run-e2e-${{ github.event.workflow_run.head_branch }}-${{ github.event.sender.login }}
+
 on:
   workflow_run:
     workflows: [Receive Fork Review]
