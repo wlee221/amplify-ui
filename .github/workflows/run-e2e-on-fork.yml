@@ -42,7 +42,7 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: 'Download artifact'
-        uses: actions/github-script@v3.1.0
+        uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
         with:
           script: |
             var artifacts = await github.actions.listWorkflowRunArtifacts({
@@ -121,7 +121,7 @@ jobs:
       - name: Update status when E2E tests are successful
         uses: ./.github/actions/set-status
         with:
-          sha: ${{ steps.read-artifact.outputs.result }}
+          sha: ${{ needs.setup.outputs.commit_id }}
           state: 'success'
           context: 'Run E2E tests'
           description: 'E2E tests have finished running'
@@ -137,7 +137,7 @@ jobs:
       - name: Update status when E2E tests are not successful
         uses: ./.github/actions/set-status
         with:
-          sha: ${{ steps.read-artifact.outputs.result }}
+          sha: ${{ needs.setup.outputs.commit_id }}
           state: 'failure'
           context: 'Run E2E tests'
           description: 'E2E tests have failed'
