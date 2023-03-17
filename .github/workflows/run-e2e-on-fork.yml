@@ -124,7 +124,7 @@ jobs:
 
   update-success-status:
     if: ${{ success() }}
-    needs: e2e
+    needs: [setup, e2e]
     runs-on: ubuntu-latest
     steps:
       - name: Update status when E2E tests are successful
