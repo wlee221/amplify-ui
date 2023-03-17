@@ -16,7 +16,7 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "setup-cache"
+      - run: exit 1;
   # setup:
   #   runs-on: ubuntu-latest
   #   steps:

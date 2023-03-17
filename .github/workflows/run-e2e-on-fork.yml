@@ -150,13 +150,13 @@ jobs:
 
   update-failure-status:
     if: ${{ failure() }}
-    needs: e2e
+    needs: [setup, e2e]
     runs-on: ubuntu-latest
     steps:
       - name: Update status when E2E tests are not successful
         uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
         env:
-          sha: ${{ steps.read-artifact.outputs.result }}
+          sha: ${{ needs.setup.outputs.commit_id }}
           owner: ${{ github.event.repository.owner.login }}
           repo: ${{ github.event.repository.name }}
           run_id: ${{ github.run_id }}
