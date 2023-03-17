@@ -45,7 +45,7 @@ jobs:
         uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
         with:
           script: |
-            var artifacts = await github.actions.listWorkflowRunArtifacts({
+            var artifacts = await github.rest.actions.listWorkflowRunArtifacts({
                owner: context.repo.owner,
                repo: context.repo.repo,
                run_id: ${{github.event.workflow_run.id }},
