@@ -1,6 +1,8 @@
 name: Run E2E on Fork
 
-concurrency: run-e2e-${{ github.event.workflow_run.head_branch }}-${{ github.event.sender.login }}
+concurrency:
+  group: run-e2e-${{ github.event.workflow_run.head_branch }}-${{ github.event.sender.login }}
+  cancel-in-progress: true
 
 on:
   workflow_run:
