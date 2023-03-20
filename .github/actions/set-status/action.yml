@@ -38,7 +38,7 @@ runs:
         script: |
           const { status_context, description, state, sha, target_url, owner, repo } = process.env;
 
-          const areInputsValid = true;
+          let areInputsValid = true;
           const invalidInputs = [];
 
           if (state.length <= 0 || !['error', 'failure', 'pending', 'success'].includes(state)) {
@@ -64,6 +64,6 @@ runs:
               target_url: target_url.length > 0 ? target_url : undefined
             });
           } else {
-            core.setFailed(`Value of ${invalidInputs.join(',')} ${invalidInputs.length > 1 ? 'input is' : 'inputs are'} not valid``);
+            core.setFailed(`Value of ${invalidInputs.join(',')} ${invalidInputs.length > 1 ? 'input is' : 'inputs are'} not valid`);
             return;
           }
