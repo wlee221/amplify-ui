@@ -42,7 +42,7 @@ runs:
             inputValidationErrors.push('"state" input cannot be empty.');
           }
           if (!["error", "failure", "pending", "success"].includes(state)) {
-            inputValidationErrors.push('"state" must be a string input with possible value of 'error', 'failure', 'pending', 'success'.');
+            inputValidationErrors.push('"state" must be a string input with possible value of "error", "failure", "pending", "success".');
           }
           if (context.length <= 0) {
             inputValidationErrors.push('"context" input cannot be empty.');
