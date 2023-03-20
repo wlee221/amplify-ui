@@ -47,7 +47,7 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "e2e"
+      - run: exit 1;
 
   # e2e:
   #   # Only run e2e tests if unit tests pass
