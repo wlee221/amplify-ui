@@ -24,14 +24,19 @@ jobs:
       - name: 'Get user permissions to check if it is either "write" or "admin"'
         id: get-permissions
         uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
+        env:
+          owner: ${{ github.event.repository.owner.login }}
+          repo: ${{ github.event.repository.name }}
+          username: ${{ github.event.sender.login }}
         with:
           result-encoding: string
           script: |
+            const { owner, repo, username } = process.env;
             const { data } = await github.rest.repos.getCollaboratorPermissionLevel({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              username: '${{ github.event.sender.login }}'
-            })
+              owner,
+              repo,
+              username
+            });
             return data.permission;
       - name: 'Fail this workflow if user does not have write permissions'
         if: ${{ steps.get-permissions.outputs.result != 'write' && steps.get-permissions.outputs.result != 'admin' }}
@@ -46,19 +51,24 @@ jobs:
     steps:
       - name: 'Download artifact'
         uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
+        env:
+          owner: ${{ github.event.repository.owner.login }}
+          repo: ${{ github.event.repository.name }}
+          run_id: ${{github.event.workflow_run.id }}
         with:
           script: |
+            const { owner, repo, run_id } = process.env;
             const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
-               owner: context.repo.owner,
-               repo: context.repo.repo,
-               run_id: ${{github.event.workflow_run.id }},
+               owner,
+               repo,
+               run_id,
             });
             const matchArtifact = artifacts.data.artifacts.filter((artifact) => {
               return artifact.name == "commit"
             })[0];
             const download = await github.rest.actions.downloadArtifact({
-               owner: context.repo.owner,
-               repo: context.repo.repo,
+               owner,
+               repo,
                artifact_id: matchArtifact.id,
                archive_format: 'zip',
             });
@@ -85,6 +95,7 @@ jobs:
           state: 'pending'
           context: 'Run E2E tests'
           description: 'E2E tests are now running'
+          # URL below is a link to the current workflow run to allow users to see the status of the workflow.
           target-url: https://github.com/${{ github.event.repository.owner.login }}/${{ github.event.repository.name }}/actions/runs/${{ github.run_id }}
 
   setup-cache:
