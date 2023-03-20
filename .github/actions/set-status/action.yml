@@ -37,21 +37,33 @@ runs:
         result-encoding: string
         script: |
           const { status_context, description, state, sha, target_url, owner, repo } = process.env;
+
+          const areInputsValid = true;
+          const invalidInputs = [];
+
           if (state.length <= 0 || !['error', 'failure', 'pending', 'success'].includes(state)) {
-            core.setFailed('Value of "state" input is not valid');
+            areInputsValid = false;
+            invalidInputs.push("state");
           }
           if (context.length <= 0) {
-            core.setFailed('Value of "context" input is not valid');
+            areInputsValid = false;
+            invalidInputs.push("context");
           }
           if (sha.length <= 0) {
-            core.setFailed('Value of "sha" input is not valid');
+            areInputsValid = false;
+            invalidInputs.push("sha");
           }
-          github.rest.repos.createCommitStatus({
-            owner,
-            repo,
-            sha,
-            state,
-            context: status_context,
-            description: description.length > 0 ? description : undefined,
-            target_url: target_url.length > 0 ? target_url : undefined
-          });
+          if (areInputsValid) {
+            github.rest.repos.createCommitStatus({
+              owner,
+              repo,
+              sha,
+              state,
+              context: status_context,
+              description: description.length > 0 ? description : undefined,
+              target_url: target_url.length > 0 ? target_url : undefined
+            });
+          } else {
+            core.setFailed(`Value of ${invalidInputs.join(',')} ${invalidInputs.length > 1 ? 'input is' : 'inputs are'} not valid``);
+            return;
+          }
