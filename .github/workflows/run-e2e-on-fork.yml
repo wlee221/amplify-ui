@@ -153,7 +153,6 @@ jobs:
       - name: Update status when E2E tests are not successful
         uses: ./.github/actions/set-status
         with:
-          sha: ${{ needs.setup.outputs.commit_id }}
           state: 'failure'
           context: 'Run E2E tests'
           description: 'E2E tests have failed'

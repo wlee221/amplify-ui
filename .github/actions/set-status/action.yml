@@ -37,6 +37,15 @@ runs:
         result-encoding: string
         script: |
           const { status_context, description, state, sha, target_url, owner, repo } = process.env;
+          if (state.length <= 0 || !['error', 'failure', 'pending', 'success'].includes(state)) {
+            core.setFailed('Value of "state" input is not valid');
+          }
+          if (context.length <= 0) {
+            core.setFailed('Value of "context" input is not valid');
+          }
+          if (sha.length <= 0) {
+            core.setFailed('Value of "sha" input is not valid');
+          }
           github.rest.repos.createCommitStatus({
             owner,
             repo,
