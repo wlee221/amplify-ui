@@ -100,15 +100,15 @@ jobs:
     needs: setup
     uses: wlee221/amplify-ui/.github/workflows/reusable-setup-cache.yml@main
     with:
-      commit: ${{ github.sha }}
+      commit: ${{ needs.setup.outputs.commit_id }}
       repository: ${{ github.repository }}
 
   e2e:
     uses: wlee221/amplify-ui/.github/workflows/reusable-e2e.yml@main
     needs: setup-cache
     with:
-      commit: ${{ github.event.pull_request.head.sha }}
-      repository: ${{ github.event.pull_request.head.repo.full_name }}
+      commit: ${{ needs.setup.outputs.commit_id }}
+      repository: ${{ github.repository }}
       target-url: https://github.com/${{ github.event.repository.owner.login }}/${{ github.event.repository.name }}/actions/runs/${{ github.run_id }}
     secrets:
       AUTH_E2E_ROLE_ARN: ${{ secrets.AUTH_E2E_ROLE_ARN }}
