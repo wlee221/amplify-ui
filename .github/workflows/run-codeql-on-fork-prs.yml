@@ -121,7 +121,7 @@ jobs:
   # update status on success
   update-success-status:
     if: ${{ success() }}
-    needs: setup
+    needs: [setup, analyze]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0 https://github.com/actions/checkout/commit/ac593985615ec2ede58e132d2e21d2b1cbd6127c
@@ -137,7 +137,7 @@ jobs:
   # update status on failure
   update-failure-status:
     if: ${{ failure() }}
-    needs: setup
+    needs: [setup, analyze]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0 https://github.com/actions/checkout/commit/ac593985615ec2ede58e132d2e21d2b1cbd6127c
