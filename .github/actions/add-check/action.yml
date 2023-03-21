@@ -24,6 +24,8 @@ outputs:
 runs:
   using: 'composite'
   steps:
+    # - run: echo ${{ toJSON(github.event) }}
+    #   shell: bash
     - name: Create a status check
       id: create-check
       uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975 # v6.4.0 https://github.com/actions/github-script/commit/98814c53be79b1d30f795b907e553d8679345975
@@ -32,12 +34,13 @@ runs:
         head_sha: ${{ inputs.head-sha }}
         status: ${{ inputs.status }}
         conclusion: ${{ inputs.conclusion }}
-        owner: ${{ github.event.repository.owner.login }}
-        repo: ${{ github.event.repository.name }}
+        owner: 'wlee221'
+        repo: 'amplify-ui'
       with:
         result-encoding: string
         script: |
           const { name, head_sha, status, conclusion, owner, repo } = process.env;
+          console.log('params for create-check: ', name, head_sha, status, conclusion, owner, repo);
           const { data } = await github.rest.checks.create({
             name,
             owner,
@@ -46,4 +49,5 @@ runs:
             status,
             conclusion: conclusion.length > 0 ? conclusion : undefined
           });
+          console.log('data: ', data);
           return data.id;
