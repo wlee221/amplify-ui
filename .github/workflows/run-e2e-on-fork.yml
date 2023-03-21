@@ -1,4 +1,10 @@
-name: Run E2E on Fork
+# Description: This workflow runs e2e tests on PRs from forks when
+#              approver has write/admin permissions and
+#              'Receive Fork Review' workflow has completed successfully
+#
+# Triggered by: maintainer approves PR from forks
+
+name: Test / Fork / E2E
 
 permissions:
   statuses: write # This is required for running set-status actions
@@ -21,7 +27,7 @@ jobs:
     # check if receive-fork-review workflow completed successfully
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
-      - name: 'Get user permissions to check if it is either "write" or "admin"'
+      - name: Get user permissions to check if it is either "write" or "admin"
         id: get-permissions
         uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
         env:
@@ -38,10 +44,12 @@ jobs:
               username
             });
             return permission;
-      - name: 'Fail this workflow if user does not have write permissions'
+      - name: Fail this workflow if user does not have write permissions
+        env:
+          PERMISSION: ${{ steps.get-permissions.outputs.result }}
         if: ${{ steps.get-permissions.outputs.result != 'write' && steps.get-permissions.outputs.result != 'admin' }}
         run: |
-          echo "${{ steps.get-permissions.outputs.result }}"
+          echo "Insufficient permission: $PERMISSION"
           exit 1
   setup:
     needs: check-write-access
@@ -49,7 +57,7 @@ jobs:
     outputs:
       commit_id: ${{ steps.read-artifact.outputs.result }}
     steps:
-      - name: 'Download artifact'
+      - name: Download artifact
         uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
         env:
           owner: ${{ github.event.repository.owner.login }}
@@ -66,16 +74,17 @@ jobs:
             const matchArtifact = artifacts.data.artifacts.filter((artifact) => {
               return artifact.name == "commit"
             })[0];
-            const download = await github.rest.actions.downloadArtifact({
+            const { data } = await github.rest.actions.downloadArtifact({
                owner,
                repo,
                artifact_id: matchArtifact.id,
                archive_format: 'zip',
             });
             const fs = require('fs');
-            fs.writeFileSync('${{github.workspace}}/commit.zip', Buffer.from(download.data));
-      - run: unzip commit.zip
-      - name: 'Read from artifact zip'
+            fs.writeFileSync('${{github.workspace}}/commit.zip', Buffer.from(data));
+      - name: Unzip commit.zip
+        run: unzip commit.zip
+      - name: Read from artifact zip
         uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
         id: read-artifact
         with:
@@ -86,17 +95,6 @@ jobs:
             return commit_id
               .replace(/(\r\n|\n|\r)/gm, '') // remove last new line character
               .replace(/[^A-Za-z0-9]/g, ''); // remove non-alphanumeric characters
-      # create status
-      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0 https://github.com/actions/checkout/commit/ac593985615ec2ede58e132d2e21d2b1cbd6127c
-      - name: Set status to commit sha
-        uses: ./.github/actions/set-status
-        with:
-          sha: ${{ steps.read-artifact.outputs.result }}
-          state: 'pending'
-          context: 'Run E2E tests'
-          description: 'E2E tests are now running'
-          # URL below is a link to the current workflow run to allow users to see the status of the workflow.
-          target-url: https://github.com/${{ github.event.repository.owner.login }}/${{ github.event.repository.name }}/actions/runs/${{ github.run_id }}
 
   setup-cache:
     needs: setup
@@ -111,6 +109,7 @@ jobs:
     with:
       commit: ${{ github.event.pull_request.head.sha }}
       repository: ${{ github.event.pull_request.head.repo.full_name }}
+      target-url: https://github.com/${{ github.event.repository.owner.login }}/${{ github.event.repository.name }}/actions/runs/${{ github.run_id }}
     secrets:
       AUTH_E2E_ROLE_ARN: ${{ secrets.AUTH_E2E_ROLE_ARN }}
       DATASTORE_E2E_ROLE_ARN: ${{ secrets.DATASTORE_E2E_ROLE_ARN }}
@@ -126,35 +125,3 @@ jobs:
       DOCSEARCH_DOCS_APP_ID: ${{ secrets.DOCSEARCH_DOCS_APP_ID }}
       DOCSEARCH_DOCS_API_KEY: ${{ secrets.DOCSEARCH_DOCS_API_KEY }}
       DOCSEARCH_DOCS_INDEX_NAME: ${{ secrets.DOCSEARCH_DOCS_INDEX_NAME }}
-
-  # update status on success
-  update-success-status:
-    if: ${{ success() }}
-    needs: [setup, e2e]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0 https://github.com/actions/checkout/commit/ac593985615ec2ede58e132d2e21d2b1cbd6127c
-      - name: Update status when E2E tests are successful
-        uses: ./.github/actions/set-status
-        with:
-          sha: ${{ needs.setup.outputs.commit_id }}
-          state: 'success'
-          context: 'Run E2E tests'
-          description: 'E2E tests have finished running'
-          target-url: https://github.com/${{ github.event.repository.owner.login }}/${{ github.event.repository.name }}/actions/runs/${{ github.run_id }}
-
-  # update status on failure
-  update-failure-status:
-    if: ${{ failure() }}
-    needs: [setup, e2e]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0 https://github.com/actions/checkout/commit/ac593985615ec2ede58e132d2e21d2b1cbd6127c
-      - name: Update status when E2E tests are not successful
-        uses: ./.github/actions/set-status
-        with:
-          sha: ${{ needs.setup.outputs.commit_id }}
-          state: 'failure'
-          context: 'Run E2E tests'
-          description: 'E2E tests have failed'
-          target-url: https://github.com/${{ github.event.repository.owner.login }}/${{ github.event.repository.name }}/actions/runs/${{ github.run_id }}

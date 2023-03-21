@@ -13,6 +13,9 @@ on:
         # repository to run tests against (possibly a fork of amplify-ui)
         required: true
         type: string
+      target-url:
+        required: false
+        type: string
     secrets:
       AUTH_E2E_ROLE_ARN:
         required: true
@@ -44,10 +47,30 @@ on:
         required: true
 
 jobs:
-  setup:
+  set-pending-status:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0 https://github.com/actions/checkout/commit/ac593985615ec2ede58e132d2e21d2b1cbd6127c
+      - name: Set status before E2E tests have started running
+        uses: ./.github/actions/set-status
+        with:
+          sha: ${{ inputs.commit }}
+          state: 'pending'
+          context: 'Run E2E tests'
+          description: 'E2E tests are now running'
+          target-url: ${{ inputs.target-url }}
+
+  e2e:
+    needs: set-pending-status
     runs-on: ubuntu-latest
     steps:
       - run: echo "e2e"
+
+  docs:
+    needs: set-pending-status
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "docs"
 
   # e2e:
   #   # Only run e2e tests if unit tests pass
@@ -380,3 +403,35 @@ jobs:
   #     #       packages/e2e/cypress/videos/**
   #     #       packages/e2e/cypress/screenshots/**
   #     #     retention-days: 5
+
+  # update status on success
+  update-success-status:
+    if: ${{ success() }}
+    needs: [e2e, docs]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0 https://github.com/actions/checkout/commit/ac593985615ec2ede58e132d2e21d2b1cbd6127c
+      - name: Update status when E2E tests are successful
+        uses: ./.github/actions/set-status
+        with:
+          sha: ${{ inputs.commit }}
+          state: 'success'
+          context: 'Run E2E tests'
+          description: 'E2E tests have finished running'
+          target-url: ${{ inputs.target-url }}
+
+  # update status on failure
+  update-failure-status:
+    if: ${{ failure() }}
+    needs: [e2e, docs]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0 https://github.com/actions/checkout/commit/ac593985615ec2ede58e132d2e21d2b1cbd6127c
+      - name: Update status when E2E tests are not successful
+        uses: ./.github/actions/set-status
+        with:
+          sha: ${{ inputs.commit }}
+          state: 'failure'
+          context: 'Run E2E tests'
+          description: 'E2E tests have failed'
+          target-url: ${{ inputs.target-url }}
