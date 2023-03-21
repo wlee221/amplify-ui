@@ -32,12 +32,12 @@ jobs:
           result-encoding: string
           script: |
             const { owner, repo, username } = process.env;
-            const { data } = await github.rest.repos.getCollaboratorPermissionLevel({
+            const { data: { permission } } = await github.rest.repos.getCollaboratorPermissionLevel({
               owner,
               repo,
               username
             });
-            return data.permission;
+            return permission;
       - name: 'Fail this workflow if user does not have write permissions'
         if: ${{ steps.get-permissions.outputs.result != 'write' && steps.get-permissions.outputs.result != 'admin' }}
         run: |
