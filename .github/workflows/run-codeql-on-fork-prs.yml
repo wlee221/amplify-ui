@@ -6,6 +6,11 @@ permissions:
   contents: read
   security-events: write
 
+# This is to let only one instance of this workflow run against the same PR.
+concurrency:
+  group: run-codeql-${{ github.event.workflow_run.head_branch }}-${{ github.event.sender.login }} # This is to make the group name unique for a PR.
+  cancel-in-progress: true
+
 on:
   workflow_run:
     workflows: [Receive Fork Review]
