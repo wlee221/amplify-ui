@@ -21,7 +21,8 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     outputs:
-      commit_id: ${{ steps.read-artifact.outputs.result }}
+      commit_id: ${{ steps.read-commit-id.outputs.result }}
+      pr_number: ${{ steps.read-pr-number.outputs.result }}
     steps:
       - name: Download artifact
         uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
@@ -50,9 +51,9 @@ jobs:
             fs.writeFileSync('${{github.workspace}}/commit.zip', Buffer.from(data));
       - name: Unzip commit.zip
         run: unzip commit.zip
-      - name: Read from artifact zip
+      - name: Read commit id from artifact zip
         uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
-        id: read-artifact
+        id: read-commit-id
         with:
           result-encoding: string
           script: |
@@ -61,12 +62,24 @@ jobs:
             return commit_id
               .replace(/(\r\n|\n|\r)/gm, '') // remove last new line character
               .replace(/[^A-Za-z0-9]/g, ''); // remove non-alphanumeric characters
+      - name: Read PR number from artifact
+        uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
+        id: read-pr-number
+        with:
+          result-encoding: string
+          script: |
+            const fs = require('fs');
+            const pr_number = fs.readFileSync('./pr_number', 'utf-8');
+            console.log(pr_number);
+            return pr_number
+              .replace(/(\r\n|\n|\r)/gm, '') // remove last new line character
+              .replace(/[^0-9]/g, ''); // remove non-alphanumeric characters
       # create status
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0 https://github.com/actions/checkout/commit/ac593985615ec2ede58e132d2e21d2b1cbd6127c
       - name: Set status to commit sha
         uses: ./.github/actions/set-status
         with:
-          sha: ${{ steps.read-artifact.outputs.result }}
+          sha: ${{ steps.read-commit-id.outputs.result }}
           state: 'pending'
           context: 'Run CodeQL checks'
           description: 'CodeQL checks are now running'
@@ -121,7 +134,7 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
         with:
-          ref: 'refs/pull/11/head'
+          ref: refs/pull/${{ needs.setup.outputs.pr_number }}/head
           sha: ${{ needs.setup.outputs.commit_id }}
           category: '/language:${{ matrix.language }}'
 
