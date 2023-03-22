@@ -122,7 +122,7 @@ jobs:
         uses: github/codeql-action/analyze@v2
         with:
           ref: 'refs/pull/11/head'
-          sha: '51574e39cf8e91ce818af4f7ae528688a7efb1b6'
+          sha: ${{ needs.setup.outputs.commit_id }}
           category: '/language:${{ matrix.language }}'
 
   # update status on success
