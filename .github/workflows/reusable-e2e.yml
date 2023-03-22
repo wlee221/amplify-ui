@@ -48,7 +48,6 @@ on:
 
 jobs:
   e2e:
-    needs: set-pending-status
     runs-on: ubuntu-latest
     steps:
       - run: echo "e2e"
