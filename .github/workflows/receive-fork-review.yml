@@ -23,4 +23,5 @@ jobs:
         with:
           name: commit
           path: commit/
-      - run: echo ${{ github.ref }}
+      - run: echo ${{ toJSON(github.event.pull_request) }}
+      - run: echo ${{ toJSON(github) }}
