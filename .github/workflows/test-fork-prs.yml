@@ -1,6 +1,6 @@
-# Description: This workflow runs e2e tests on PRs from forks when
-#              approver has write/admin permissions and
-#              'Receive Fork Review' workflow has completed successfully
+# Description: This workflow runs test suite against fork PRs when approver 
+#              has write/admin permissions and 'Receive Fork Review' workflow 
+#              has completed successfully.
 #
 # Triggered by: maintainer approves PR from forks
 
@@ -11,7 +11,7 @@ permissions:
 
 # This is to let only one instance of this workflow run against the same PR.
 concurrency:
-  group: run-e2e-${{ github.event.workflow_run.head_branch }}-${{ github.event.sender.login }} # This is to make the group name unique for a PR.
+  group: test-fork-prs-${{ github.event.workflow_run.head_branch }}-${{ github.event.sender.login }} # This is to make the group name unique for a PR.
   cancel-in-progress: true
 
 on:
@@ -226,7 +226,6 @@ jobs:
       DOCSEARCH_DOCS_API_KEY: ${{ secrets.DOCSEARCH_DOCS_API_KEY }}
       DOCSEARCH_DOCS_INDEX_NAME: ${{ secrets.DOCSEARCH_DOCS_INDEX_NAME }}
 
-
   # update status on success
   update-success-status:
     if: ${{ success() }}
@@ -234,7 +233,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0 https://github.com/actions/checkout/commit/ac593985615ec2ede58e132d2e21d2b1cbd6127c
-      - name: Update status when E2E tests are successful
+      - name: Update status when tests are successful
         uses: ./.github/actions/set-status
         with:
           sha: ${{ needs.setup.outputs.commit_id }}
@@ -250,7 +249,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0 https://github.com/actions/checkout/commit/ac593985615ec2ede58e132d2e21d2b1cbd6127c
-      - name: Update status when E2E tests are not successful
+      - name: Update status when PR tests are not successful
         uses: ./.github/actions/set-status
         with:
           sha: ${{ needs.setup.outputs.commit_id }}
