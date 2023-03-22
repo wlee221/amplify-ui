@@ -3,7 +3,7 @@ import maplibregl from 'maplibre-gl';
 import { AmplifyMapLibreRequest } from 'maplibre-gl-js-amplify';
 import ReactMapGL from 'react-map-gl';
 import type { MapProps, MapRef, TransformRequestFunction } from 'react-map-gl';
-import { Amplify, Auth, Interactions } from 'aws-amplify';
+import { Amplify, Auth, Storage } from 'aws-amplify';
 
 // Utility types for missing AmplifyConfig type, only includes Geo related key/values.
 // Note: these types should not be be used outside this file
