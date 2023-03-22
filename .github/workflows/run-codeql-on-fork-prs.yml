@@ -121,6 +121,8 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
         with:
+          ref: 'refs/remotes/pull/11/merge'
+          sha: '51574e39cf8e91ce818af4f7ae528688a7efb1b6'
           category: '/language:${{ matrix.language }}'
 
   # update status on success
