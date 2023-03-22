@@ -57,6 +57,7 @@ jobs:
     outputs:
       commit_id: ${{ steps.read-commit-id.outputs.result }}
       pr_number: ${{ steps.read-pr-number.outputs.result }}
+      base_sha: ${{ steps.read-base-sha.outputs.result }}
     steps:
       - name: Download artifact
         uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
@@ -104,12 +105,23 @@ jobs:
           script: |
             const fs = require('fs');
             const pr_number = fs.readFileSync('./pr_number', 'utf-8');
-            console.log(pr_number);
             return pr_number
               .replace(/(\r\n|\n|\r)/gm, '') // remove last new line character
               .replace(/[^0-9]/g, ''); // remove non-alphanumeric characters
-      # create status
+      - name: Read base sha from artifact
+        uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
+        id: read-base-sha
+        with:
+          result-encoding: string
+          script: |
+            const fs = require('fs');
+            const base_sha = fs.readFileSync('./base_sha', 'utf-8');
+            return base_sha
+              .replace(/(\r\n|\n|\r)/gm, '') // remove last new line character
+              .replace(/[^A-Za-z0-9]/g, ''); // remove non-alphanumeric characters
+      
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0 https://github.com/actions/checkout/commit/ac593985615ec2ede58e132d2e21d2b1cbd6127c
+      # create status
       - name: Set status to commit sha
         uses: ./.github/actions/set-status
         with:
@@ -164,7 +176,7 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
         with:
-          # ref should target refs/pull/<numbwer>/head
+          # ref should target refs/pull/<number>/head
           ref: refs/pull/${{ needs.setup.outputs.pr_number }}/head
           sha: ${{ needs.setup.outputs.commit_id }}
           category: '/language:${{ matrix.language }}'
@@ -180,6 +192,9 @@ jobs:
           repository: ${{ github.repository }}
       - name: 'Dependency Review'
         uses: actions/dependency-review-action@v3
+        with:
+          base_ref: ${{ needs.setup.outputs.base_sha }}
+          head_ref: ${{ needs.setup.outputs.commit_id }}
 
   setup-cache:
     needs: setup
@@ -215,7 +230,7 @@ jobs:
   # update status on success
   update-success-status:
     if: ${{ success() }}
-    needs: [setup, e2e]
+    needs: [setup, e2e, codeql, dependency-review]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0 https://github.com/actions/checkout/commit/ac593985615ec2ede58e132d2e21d2b1cbd6127c
@@ -224,14 +239,14 @@ jobs:
         with:
           sha: ${{ needs.setup.outputs.commit_id }}
           state: 'success'
-          context: 'Run E2E tests'
-          description: 'E2E tests have finished running'
+          context: 'Run PR checks'
+          description: 'PR checks have finished running'
           target-url: https://github.com/${{ github.event.repository.owner.login }}/${{ github.event.repository.name }}/actions/runs/${{ github.run_id }}
 
   # update status on failure
   update-failure-status:
     if: ${{ failure() }}
-    needs: [setup, e2e]
+    needs: [setup, e2e, codeql, dependency-review]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0 https://github.com/actions/checkout/commit/ac593985615ec2ede58e132d2e21d2b1cbd6127c
@@ -240,6 +255,6 @@ jobs:
         with:
           sha: ${{ needs.setup.outputs.commit_id }}
           state: 'failure'
-          context: 'Run E2E tests'
-          description: 'E2E tests have failed'
+          context: 'Run PR checks'
+          description: 'PR checks have failed'
           target-url: https://github.com/${{ github.event.repository.owner.login }}/${{ github.event.repository.name }}/actions/runs/${{ github.run_id }}
