@@ -193,8 +193,8 @@ jobs:
       - name: 'Dependency Review'
         uses: actions/dependency-review-action@v3
         with:
-          base_ref: ${{ needs.setup.outputs.base_sha }}
-          head_ref: ${{ needs.setup.outputs.commit_id }}
+          base-ref: ${{ needs.setup.outputs.base_sha }}
+          head-ref: ${{ needs.setup.outputs.commit_id }}
 
   setup-cache:
     needs: setup
