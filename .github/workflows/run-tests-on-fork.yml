@@ -4,7 +4,7 @@
 #
 # Triggered by: maintainer approves PR from forks
 
-name: Test / Fork / E2E
+name: Test / Fork / PRs
 
 permissions:
   statuses: write # This is required for running set-status actions
