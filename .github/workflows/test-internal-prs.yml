@@ -1,12 +1,11 @@
-# Description: This workflow runs unit, e2e, codeql, and dependency review
-#              against internal PRs 
+# Description: This workflow runs test suite against PRs that are not from forks.
 #
 # Triggered by:
 #   (1) Opening a pull request
 #   (2) On every commit to the PR
 #   (3) Adding run-tests label to the PR
 
-name: Test / Internal / PRs
+name: Test / Internal PRs
 
 concurrency:
   group: test-internal-prs-${{ github.event.pull_request.id }}
@@ -17,17 +16,11 @@ on:
     branches: [main]
     types: [opened, synchronize, labeled]
 
-permissions:
-  pull-requests: write # used to remove label
-  id-token: write # This is required for requesting the JWT
-  statuses: write # This is required for running set-status actions
-  # other permissions are defaulted to "none"
-
 jobs:
   setup:
     runs-on: ubuntu-latest
-    # We run tests only if 
-    #   (1) this pr is not from a fork, and 
+    # We run tests only if
+    #   (1) this pr is not from a fork, and
     #   (2) it's either 'opened' or 'synchronize' action or 'labeled' action with 'run-tests' label.
     if: |
       github.event.pull_request.head.repo.full_name == github.repository && (
@@ -35,6 +28,9 @@ jobs:
         github.event.action == 'synchronize' || 
         (github.event.action == 'labeled' && github.event.label.name == 'run-tests')
       )
+    permissions:
+      pull-requests: write # used to remove label
+      statuses: write # This is required for running set-status actions
     steps:
       - name: Remove run-tests label, if applicable
         if: github.event.label.name == 'run-tests'
@@ -49,8 +45,8 @@ jobs:
           script: |
             const { ISSUE_NUMBER, REPO_OWNER, REPO_NAME, LABEL_NAME } = process.env
             github.rest.issues.removeLabel({ owner: REPO_OWNER, repo: REPO_NAME, issue_number: ISSUE_NUMBER, name: LABEL_NAME })
-      - name: 'Checkout Repository'
-        uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f #v3.4.0 https://github.com/actions/checkout/commit/24cb9080177205b6e8c946b17badbe402adc938f
       - name: Set status to commit sha
         uses: ./.github/actions/set-status
         with:
@@ -76,7 +72,7 @@ jobs:
     permissions:
       actions: read
       contents: read
-      security-events: write
+      security-events: write # to write security event to the PR
     strategy:
       fail-fast: false
       matrix:
@@ -86,17 +82,17 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@d23060145bc9131d50558d5d4185494a20208101
         with:
           languages: ${{ matrix.language }}
           config-file: ./.github/codeql/codeql-config.yml
           queries: +security-and-quality
 
       - name: Autobuild
-        uses: github/codeql-action/autobuild@v2
+        uses: github/codeql-action/autobuild@d23060145bc9131d50558d5d4185494a20208101
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@d23060145bc9131d50558d5d4185494a20208101
         with:
           category: '/language:${{ matrix.language }}'
 
@@ -120,6 +116,8 @@ jobs:
     with:
       commit: ${{ github.event.pull_request.head.sha }}
       repository: ${{ github.event.pull_request.head.repo.full_name }}
+    permissions:
+      id-token: write # This is required for requesting the JWT
     secrets:
       AUTH_E2E_ROLE_ARN: ${{ secrets.AUTH_E2E_ROLE_ARN }}
       DATASTORE_E2E_ROLE_ARN: ${{ secrets.DATASTORE_E2E_ROLE_ARN }}
@@ -136,11 +134,12 @@ jobs:
       DOCSEARCH_DOCS_API_KEY: ${{ secrets.DOCSEARCH_DOCS_API_KEY }}
       DOCSEARCH_DOCS_INDEX_NAME: ${{ secrets.DOCSEARCH_DOCS_INDEX_NAME }}
 
- # update status on success
   update-success-status:
     if: ${{ success() }}
     needs: [setup, e2e, codeql, dependency-review]
     runs-on: ubuntu-latest
+    permissions:
+      statuses: write # This is required for running set-status actions
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0 https://github.com/actions/checkout/commit/ac593985615ec2ede58e132d2e21d2b1cbd6127c
       - name: Update status when tests are successful
@@ -152,11 +151,12 @@ jobs:
           description: 'PR checks have finished running'
           target-url: https://github.com/${{ github.event.repository.owner.login }}/${{ github.event.repository.name }}/actions/runs/${{ github.run_id }}
 
-  # update status on failure
   update-failure-status:
     if: ${{ failure() }}
     needs: [setup, e2e, codeql, dependency-review]
     runs-on: ubuntu-latest
+    permissions:
+      statuses: write # This is required for running set-status actions
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0 https://github.com/actions/checkout/commit/ac593985615ec2ede58e132d2e21d2b1cbd6127c
       - name: Update status when tests are not successful

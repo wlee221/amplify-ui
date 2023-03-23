@@ -1,13 +1,10 @@
-# Description: This workflow runs test suite against fork PRs when approver 
-#              has write/admin permissions and 'Receive Fork Review' workflow 
+# Description: This workflow runs test suite against fork PRs when approver
+#              has write/admin permissions and 'Receive Fork Review' workflow
 #              has completed successfully.
 #
 # Triggered by: maintainer approves PR from forks
 
-name: Test / Fork / PRs
-
-permissions:
-  statuses: write # This is required for running set-status actions
+name: Test / Fork PRs
 
 # This is to let only one instance of this workflow run against the same PR.
 concurrency:
@@ -26,6 +23,8 @@ jobs:
     runs-on: ubuntu-latest
     # check if receive-fork-review workflow completed successfully
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    permissions:
+      statuses: write # This is required for running set-status actions
     steps:
       - name: Get user permissions to check if it is either "write" or "admin"
         id: get-permissions
@@ -119,9 +118,8 @@ jobs:
             return base_sha
               .replace(/(\r\n|\n|\r)/gm, '') // remove last new line character
               .replace(/[^A-Za-z0-9]/g, ''); // remove non-alphanumeric characters
-      
+
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0 https://github.com/actions/checkout/commit/ac593985615ec2ede58e132d2e21d2b1cbd6127c
-      # create status
       - name: Set status to commit sha
         uses: ./.github/actions/set-status
         with:
@@ -159,22 +157,22 @@ jobs:
             github.rest.issues.removeLabel({ owner: REPO_OWNER, repo: REPO_NAME, issue_number: ISSUE_NUMBER, name: LABEL_NAME })
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0 https://github.com/actions/checkout/commit/ac593985615ec2ede58e132d2e21d2b1cbd6127c
         with:
           ref: ${{ needs.setup.outputs.commit_id }}
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@d23060145bc9131d50558d5d4185494a20208101
         with:
           languages: ${{ matrix.language }}
           config-file: ./.github/codeql/codeql-config.yml
           queries: +security-and-quality
 
       - name: Autobuild
-        uses: github/codeql-action/autobuild@v2
+        uses: github/codeql-action/autobuild@d23060145bc9131d50558d5d4185494a20208101
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@d23060145bc9131d50558d5d4185494a20208101
         with:
           # ref should target refs/pull/<number>/head
           ref: refs/pull/${{ needs.setup.outputs.pr_number }}/head
@@ -186,8 +184,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout Repository'
-        uses: actions/checkout@v3
-        with: 
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0 https://github.com/actions/checkout/commit/ac593985615ec2ede58e132d2e21d2b1cbd6127c
+        with:
           commit: ${{ needs.setup.outputs.commit_id }}
           repository: ${{ github.repository }}
       - name: 'Dependency Review'
@@ -198,13 +196,13 @@ jobs:
 
   setup-cache:
     needs: setup
-    uses: wlee221/amplify-ui/.github/workflows/reusable-setup-cache.yml@main
+    uses: ./.github/workflows/reusable-setup-cache.yml
     with:
       commit: ${{ needs.setup.outputs.commit_id }}
       repository: ${{ github.repository }}
 
   e2e:
-    uses: wlee221/amplify-ui/.github/workflows/reusable-e2e.yml@main
+    uses: ./.github/workflows/reusable-e2e.yml
     needs: [setup, setup-cache]
     with:
       commit: ${{ needs.setup.outputs.commit_id }}
@@ -231,6 +229,8 @@ jobs:
     if: ${{ success() }}
     needs: [setup, e2e, codeql, dependency-review]
     runs-on: ubuntu-latest
+    permissions:
+      statuses: write # This is required for running set-status actions
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0 https://github.com/actions/checkout/commit/ac593985615ec2ede58e132d2e21d2b1cbd6127c
       - name: Update status when tests are successful
@@ -247,6 +247,8 @@ jobs:
     if: ${{ failure() }}
     needs: [setup, e2e, codeql, dependency-review]
     runs-on: ubuntu-latest
+    permissions:
+      statuses: write # This is required for running set-status actions
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0 https://github.com/actions/checkout/commit/ac593985615ec2ede58e132d2e21d2b1cbd6127c
       - name: Update status when PR tests are not successful
