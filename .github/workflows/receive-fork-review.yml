@@ -1,3 +1,7 @@
+# Description: This workflow verifies that the PR is from a fork and is approved.
+#
+# Triggered by: PR is reviewed
+
 name: Receive Fork Review
 
 on:
@@ -26,4 +30,3 @@ jobs:
         with:
           name: commit
           path: commit/
-
