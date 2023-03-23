@@ -26,8 +26,15 @@ permissions:
 jobs:
   setup:
     runs-on: ubuntu-latest
-    # We run tests only if it's not from a fork
-    if: github.event.pull_request.head.repo.full_name == github.repository
+    # We run tests only if 
+    #   (1) this pr is not from a fork, and 
+    #   (2) it's either 'opened' or 'synchronize' action or 'labeled' action with 'run-tests' label.
+    if: |
+      github.event.pull_request.head.repo.full_name == github.repository && (
+        github.event.action == 'opened' ||  
+        github.event.action == 'synchronize' || 
+        (github.event.action == 'labeled' && github.event.label.name == 'run-tests')
+      )
     steps:
       - name: Remove run-tests label, if applicable
         if: github.event.label.name == 'run-tests'
