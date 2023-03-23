@@ -13,6 +13,9 @@ on:
         # repository to run tests against (possibly a fork of amplify-ui)
         required: true
         type: string
+      target-url:
+        required: false
+        type: string
     secrets:
       AUTH_E2E_ROLE_ARN:
         required: true
@@ -44,10 +47,15 @@ on:
         required: true
 
 jobs:
-  setup:
+  e2e:
     runs-on: ubuntu-latest
     steps:
       - run: echo "e2e"
+
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "docs"
 
   # e2e:
   #   # Only run e2e tests if unit tests pass
@@ -380,3 +388,5 @@ jobs:
   #     #       packages/e2e/cypress/videos/**
   #     #       packages/e2e/cypress/screenshots/**
   #     #     retention-days: 5
+
+ 
