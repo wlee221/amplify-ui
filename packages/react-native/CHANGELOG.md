@@ -1,5 +1,15 @@
 # @aws-amplify/ui-react-native
 
+## 1.2.14
+
+### Patch Changes
+
+- [#3654](https://github.com/aws-amplify/amplify-ui/pull/3654) [`579ace564`](https://github.com/aws-amplify/amplify-ui/commit/579ace564ef85c4ec465b4ddfed38587c2669140) Thanks [@calebpollman](https://github.com/calebpollman)! - fix(ui-react-native): remove themed selectionColor from TextField
+
+- Updated dependencies [[`747516159`](https://github.com/aws-amplify/amplify-ui/commit/747516159d504b551dab09cbe8f214fa7b4505df)]:
+  - @aws-amplify/ui@5.5.11
+  - @aws-amplify/ui-react-core@2.1.19
+
 ## 1.2.13
 
 ### Patch Changes

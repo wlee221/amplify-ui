@@ -1,5 +1,15 @@
 # @aws-amplify/ui-react
 
+## 4.5.2
+
+### Patch Changes
+
+- [#3663](https://github.com/aws-amplify/amplify-ui/pull/3663) [`747516159`](https://github.com/aws-amplify/amplify-ui/commit/747516159d504b551dab09cbe8f214fa7b4505df) Thanks [@dbanksdesign](https://github.com/dbanksdesign)! - Adding an internal Field primitive
+
+- Updated dependencies [[`747516159`](https://github.com/aws-amplify/amplify-ui/commit/747516159d504b551dab09cbe8f214fa7b4505df)]:
+  - @aws-amplify/ui@5.5.11
+  - @aws-amplify/ui-react-core@2.1.19
+
 ## 4.5.1
 
 ### Patch Changes
