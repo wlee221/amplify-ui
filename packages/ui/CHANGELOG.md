@@ -1,5 +1,11 @@
 # @aws-amplify/ui
 
+## 5.5.11
+
+### Patch Changes
+
+- [#3663](https://github.com/aws-amplify/amplify-ui/pull/3663) [`747516159`](https://github.com/aws-amplify/amplify-ui/commit/747516159d504b551dab09cbe8f214fa7b4505df) Thanks [@dbanksdesign](https://github.com/dbanksdesign)! - Adding an internal Field primitive
+
 ## 5.5.10
 
 ### Patch Changes
