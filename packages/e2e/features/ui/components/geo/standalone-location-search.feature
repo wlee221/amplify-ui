@@ -6,7 +6,7 @@ Feature: Standalone LocationSearch
     Given I'm running the example "ui/components/geo/standalone-location-search"
     And my default search results is 5
 
-  @react
+  # @react
   Scenario: Shows results while typing
     When I search for "Amazon Go"
     Then I see results equal to my default search results

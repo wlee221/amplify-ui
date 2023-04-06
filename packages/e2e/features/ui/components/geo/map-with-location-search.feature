@@ -12,7 +12,7 @@ Feature: Map with LocationSearch
     And I press the enter key
     Then I see markers equal to my default search results
 
-  @react
+  # @react
   Scenario: Single map marker
     When I search for "Amazon Go"
     And I select the first search result

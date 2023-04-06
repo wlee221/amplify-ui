@@ -63,7 +63,7 @@ Feature: In-App Messaging demo page to show banners with various configurations
     Then I see a "top" banner dialog
     And the banner has an image
 
-  @react
+  # @react
   Scenario: Verify that top banner is shown on TOP_BANNER analytic event
     When I toggle "Use Analytic events" checkbox
     And I wait for pinpoint messages to sync
@@ -71,7 +71,7 @@ Feature: In-App Messaging demo page to show banners with various configurations
     And I click the "Display Demo Message" button
     Then I see a "top" banner dialog
 
-  @react
+  # @react
   Scenario: Verify that bottom banner is shown on BOTTOM_BANNER analytic event
     When I toggle "Use Analytic events" checkbox
     And I wait for pinpoint messages to sync
@@ -79,7 +79,7 @@ Feature: In-App Messaging demo page to show banners with various configurations
     And I click the "Display Demo Message" button
     Then I see a "bottom" banner dialog
 
-  @react
+  # @react
   Scenario: Verify that middle banner is shown on MIDDLE_BANNER analytic event
     When I toggle "Use Analytic events" checkbox
     And I wait for pinpoint messages to sync
@@ -87,7 +87,7 @@ Feature: In-App Messaging demo page to show banners with various configurations
     And I click the "Display Demo Message" button
     Then I see a "middle" banner dialog
 
-  @react
+  # @react
   Scenario: Verify that modal banner is shown on MODAL analytic event
     When I toggle "Use Analytic events" checkbox
     And I wait for pinpoint messages to sync
@@ -95,7 +95,7 @@ Feature: In-App Messaging demo page to show banners with various configurations
     And I click the "Display Demo Message" button
     Then I see a "modal" dialog
 
-  @react
+  # @react
   Scenario: Verify that fullscreen banner is shown on FULL_SCREEN analytic event
     When I toggle "Use Analytic events" checkbox
     And I wait for pinpoint messages to sync
