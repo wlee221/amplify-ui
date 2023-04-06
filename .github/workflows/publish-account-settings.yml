@@ -43,7 +43,7 @@ jobs:
       DOCSEARCH_DOCS_INDEX_NAME: ${{ secrets.DOCSEARCH_DOCS_INDEX_NAME }}
 
   publish:
-    needs: test
+    needs: e2e
     uses: ./.github/workflows/reusable-tagged-publish.yml
     with:
       dist-tag: account-settings

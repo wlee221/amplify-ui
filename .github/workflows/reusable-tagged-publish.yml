@@ -47,5 +47,8 @@ jobs:
         run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> .npmrc
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Publish to next tag
-        run: yarn changeset publish --tag ${{ inputs.dist-tag }}
+      - name: MOCK publish to next tag
+        run: |
+          echo "Publish is mocked in fork."
+          echo "Running npm whoami instead..."
+          npm whoami

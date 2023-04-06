@@ -92,7 +92,6 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     environment: deployment
-    needs: build-test
     if: ${{ needs.setup.outputs.has-changesets != 'true' }}
     steps:
       - name: Checkout repo
@@ -113,13 +112,15 @@ jobs:
           skip-cypress-binary: true # publishing doesn't need cypress
       - name: Build packages
         run: yarn build
-      - name: Publish to @latest
-        uses: changesets/action@b98cec97583b917ff1dc6179dd4d230d3e439894
-        with:
-          publish: yarn publish:latest
+      - name: Create .npmrc
+        run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> .npmrc
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: MOCK Publish to @latest
+        run: |
+          echo "Publish is mocked in fork."
+          echo "Running npm whoami instead..."
+          npm whoami
 
   log-failure-metric:
     # Send a failure data point to metric PublishLatestFailure in github-workflows@ us-east-2
