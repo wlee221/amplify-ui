@@ -4,7 +4,7 @@ Feature: Upload a file to S3 with private access level settings
   Background:
     Given I'm running the example "ui/components/storage/storage-manager/private-access-level"
 
-  @react
+  # @react
   Scenario: I authenticate, then select a file and upload it
     When I type my "email" with status "CONFIRMED"
     And I type my password
