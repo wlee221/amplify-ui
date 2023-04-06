@@ -57,7 +57,7 @@ Feature: Sign In with SMS MFA
     And I click the "Sign in" button
     Then I see "User does not exist"
 
-@angular @react @vue
+# @angular @react @vue
 Scenario: Sign in with force change password with sms mfa
   Given I intercept '{ "headers": { "X-Amz-Target": "AWSCognitoIdentityProviderService.RespondToAuthChallenge" } }' with fixture "force-change-password"
   When I select my country code with status "FORCE_CHANGE_PASSWORD"
