@@ -7,7 +7,6 @@ import { I18nComponent } from 'src/pages/ui/components/authenticator/i18n/i18n.c
 import { ModalComponent } from 'src/pages/ui/components/authenticator/modal/modal.component';
 import { ResetPasswordComponent } from 'src/pages/ui/components/authenticator/reset-password/reset-password.component';
 import { SignInTOTPMFAComponent } from 'src/pages/ui/components/authenticator/sign-in-totp-mfa/sign-in-totp-mfa.component';
-import { SignInTOTPSMSComponent } from 'src/pages/ui/components/authenticator/sign-in-totp-sms/sign-in-totp-sms.component';
 import { SignInWithEmailComponent } from 'src/pages/ui/components/authenticator/sign-in-with-email/sign-in-with-email.component';
 import { SignInWithUsernameComponent } from 'src/pages/ui/components/authenticator/sign-in-with-username/sign-in-with-username.component';
 import { SignUpWithAttributesComponent } from 'src/pages/ui/components/authenticator/sign-up-with-attributes/sign-up-with-attributes.component';
@@ -49,10 +48,6 @@ const routes: Routes = [
   {
     path: 'ui/components/authenticator/sign-in-totp-mfa',
     component: SignInTOTPMFAComponent,
-  },
-  {
-    path: 'ui/components/authenticator/sign-in-totp-sms',
-    component: SignInTOTPSMSComponent,
   },
   {
     path: 'ui/components/authenticator/sign-in-with-username',
