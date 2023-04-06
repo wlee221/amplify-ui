@@ -1,47 +1,47 @@
 {
   "auth": {
     "basicmapd744ff18": {
-      "service": "Cognito",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [],
       "customAuth": false,
+      "dependsOn": [],
       "frontendAuthConfig": {
-        "socialProviders": [],
-        "usernameAttributes": [],
-        "signupAttributes": [
-          "EMAIL"
-        ],
-        "passwordProtectionSettings": {
-          "passwordPolicyMinLength": 8,
-          "passwordPolicyCharacters": []
-        },
         "mfaConfiguration": "OFF",
         "mfaTypes": [
           "SMS"
         ],
+        "passwordProtectionSettings": {
+          "passwordPolicyCharacters": [],
+          "passwordPolicyMinLength": 8
+        },
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "socialProviders": [],
+        "usernameAttributes": [],
         "verificationMechanisms": [
           "EMAIL"
         ]
-      }
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito"
     }
   },
   "geo": {
     "map5df169f7": {
+      "accessType": "AuthorizedAndGuestUsers",
       "isDefault": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Map",
       "mapStyle": "VectorEsriStreets",
       "pricingPlan": "RequestBasedUsage",
-      "accessType": "AuthorizedAndGuestUsers"
+      "providerPlugin": "awscloudformation",
+      "service": "Map"
     },
     "placeindex5588737e": {
-      "isDefault": true,
-      "providerPlugin": "awscloudformation",
-      "service": "PlaceIndex",
+      "accessType": "AuthorizedAndGuestUsers",
       "dataProvider": "Esri",
       "dataSourceIntendedUse": "SingleUse",
+      "isDefault": true,
       "pricingPlan": "RequestBasedUsage",
-      "accessType": "AuthorizedAndGuestUsers"
+      "providerPlugin": "awscloudformation",
+      "service": "PlaceIndex"
     }
   }
 }

@@ -1,26 +1,26 @@
 export type AmplifyDependentResourcesAttributes = {
-    "auth": {
-        "basicmapd744ff18": {
-            "IdentityPoolId": "string",
-            "IdentityPoolName": "string",
-            "UserPoolId": "string",
-            "UserPoolArn": "string",
-            "UserPoolName": "string",
-            "AppClientIDWeb": "string",
-            "AppClientID": "string"
-        }
-    },
-    "geo": {
-        "map5df169f7": {
-            "Name": "string",
-            "Style": "string",
-            "Region": "string",
-            "Arn": "string"
-        },
-        "placeindex5588737e": {
-            "Name": "string",
-            "Region": "string",
-            "Arn": "string"
-        }
+  "auth": {
+    "basicmapd744ff18": {
+      "AppClientID": "string",
+      "AppClientIDWeb": "string",
+      "IdentityPoolId": "string",
+      "IdentityPoolName": "string",
+      "UserPoolArn": "string",
+      "UserPoolId": "string",
+      "UserPoolName": "string"
     }
+  },
+  "geo": {
+    "map5df169f7": {
+      "Arn": "string",
+      "Name": "string",
+      "Region": "string",
+      "Style": "string"
+    },
+    "placeindex5588737e": {
+      "Arn": "string",
+      "Name": "string",
+      "Region": "string"
+    }
+  }
 }
