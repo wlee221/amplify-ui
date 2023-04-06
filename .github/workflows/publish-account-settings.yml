@@ -10,19 +10,19 @@ on:
 
 jobs:
   setup-cache:
-    uses: aws-amplify/amplify-ui/.github/workflows/reusable-setup-cache.yml@account-settings/main
+    uses: wlee221/amplify-ui/.github/workflows/reusable-setup-cache.yml@account-settings/main
     with:
       commit: ${{ github.sha }}
       repository: ${{ github.repository }}
 
   unit:
-    uses: aws-amplify/amplify-ui/.github/workflows/reusable-unit.yml@account-settings/main
+    uses: wlee221/amplify-ui/.github/workflows/reusable-unit.yml@account-settings/main
     with:
       commit: ${{ github.sha }}
       repository: ${{ github.repository }}
 
   e2e:
-    uses: aws-amplify/amplify-ui/.github/workflows/reusable-e2e.yml@account-settings/main
+    uses: wlee221/amplify-ui/.github/workflows/reusable-e2e.yml@account-settings/main
     with:
       commit: ${{ github.sha }}
       repository: ${{ github.repository }}
